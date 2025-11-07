@@ -1,0 +1,7 @@
+name: "Aembit Credentials"
+description: "GitHub action to fetch Aembit credentials"
+author: "Aembit"
+
+runs:
+  using: node24
+  main: dist/index.js
