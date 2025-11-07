@@ -1,7 +1,7 @@
 {
   "name": "credentials",
   "version": "1.0.0",
-  "description": "GitHub action to for Aembit credentials",
+  "description": "GitHub action to fetch Aembit credentials",
   "keywords": [
     "github",
     "action",
@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@actions/core": "^1.11.1",
+    "@types/node": "^24.10.0",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
