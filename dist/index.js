@@ -25891,6 +25891,250 @@ module.exports = require("zlib");
 
 /***/ }),
 
+/***/ 8811:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getAccessToken = getAccessToken;
+const core = __importStar(__nccwpck_require__(7484));
+function getAccessToken(clientId, identityToken, domain) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const tenantId = clientId.split(":")[2];
+        const url = `https://${tenantId}.ec.${domain}/edge/v1/auth`;
+        core.info(`Fetch access token (url): ${url}`);
+        // Request an access token from Aembit Edge server
+        const response = yield fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                clientId: clientId,
+                client: {
+                    github: {
+                        identityToken: identityToken,
+                    },
+                },
+            }),
+        });
+        core.info(`Response status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch access token: ${response.statusText}`);
+        }
+        const data = (yield response.json());
+        if (!data || typeof data.accessToken !== "string") {
+            throw new Error("Invalid response: missing accessToken");
+        }
+        return data.accessToken;
+    });
+}
+
+
+/***/ }),
+
+/***/ 5195:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getApiKey = getApiKey;
+const core = __importStar(__nccwpck_require__(7484));
+function getApiKey(clientId, identityToken, accessToken, domain, serverHost, serverPort) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const tenantId = clientId.split(":")[2];
+        const url = `https://${tenantId}.ec.${domain}/edge/v1/credentials`;
+        core.info(`Fetch API Key (url): ${url}`);
+        // Request an API key from Credential Provider
+        const response = yield fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+                clientId: clientId,
+                client: {
+                    github: {
+                        identityToken: identityToken,
+                    },
+                },
+                server: {
+                    host: serverHost,
+                    port: serverPort,
+                },
+                credentialType: "ApiKey",
+            }),
+            redirect: "follow",
+        });
+        core.info(`Response status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch access token: ${response.statusText}`);
+        }
+        const data = (yield response.json()["data"]);
+        if (!data || typeof data.apiKey !== "string") {
+            throw new Error("Invalid response: missing apiKey");
+        }
+        // Masking API key.
+        core.setSecret(data.apiKey);
+        return data.apiKey;
+    });
+}
+
+
+/***/ }),
+
+/***/ 927:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getIdentityToken = getIdentityToken;
+const core = __importStar(__nccwpck_require__(7484));
+function getIdentityToken(clientId, domain) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const tenantId = clientId.split(":")[2];
+        const url = `https://${tenantId}.id.${domain}`;
+        core.info(`Fetching token ID for ${url}`);
+        // Request an OpenID Connect (OIDC) token from GitHub’s OIDC provider
+        const metadata = yield core.getIDToken(url);
+        const identityToken = Buffer.from(metadata).toString("utf-8");
+        return identityToken;
+    });
+}
+
+
+/***/ }),
+
 /***/ 7940:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -25940,10 +26184,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(7484));
+const identity_token_1 = __nccwpck_require__(927);
+const access_token_1 = __nccwpck_require__(8811);
+const api_key_1 = __nccwpck_require__(5195);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
         try {
+            // Read inputs for action (defined in action.yml file)
+            const clientId = core.getInput("client-id");
+            const domain = core.getInput("domain");
+            const serverHost = core.getInput("server-host");
+            const serverPort = core.getInput("server-port");
+            // Get Identity Token
+            const identityToken = yield (0, identity_token_1.getIdentityToken)(clientId, domain);
+            // Get Access Token
+            const accessToken = yield (0, access_token_1.getAccessToken)(clientId, identityToken, domain);
+            // Get API key
+            const apiKey = yield (0, api_key_1.getApiKey)(clientId, identityToken, accessToken, domain, serverHost, serverPort);
+            core.setOutput("api-key", apiKey);
         }
         catch (error) {
             core.setFailed(`${(_a = error === null || error === void 0 ? void 0 : error.message) !== null && _a !== void 0 ? _a : error}`);
