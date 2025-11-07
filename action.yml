@@ -9,6 +9,15 @@ inputs:
   domain:
     description: "Root domain for Aembit"
     default: "useast2.aembit.io"
+  server-host:
+    description: "Server workload hostname"
+  server-port:
+    description: "Server workload port number"
+    default: "443"
+
+outputs:
+  api-key:
+    description: "API key from Credential Provider"
 
 runs:
   using: node24
