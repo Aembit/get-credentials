@@ -1,0 +1,32 @@
+{
+  "name": "credentials",
+  "version": "1.0.0",
+  "description": "GitHub action to for Aembit credentials",
+  "keywords": [
+    "github",
+    "action",
+    "aembit"
+  ],
+  "homepage": "https://aembit.io/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aembit/credentials.git"
+  },
+  "license": "MIT",
+  "author": "devops@aembit.io",
+  "type": "commonjs",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc && ncc build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.4",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3"
+  }
+}
