@@ -26057,13 +26057,13 @@ function getApiKey(clientId, identityToken, accessToken, domain, serverHost, ser
         if (!response.ok) {
             throw new Error(`Failed to fetch access token: ${response.statusText}`);
         }
-        const data = (yield response.json()["data"]);
-        if (!data || typeof data.apiKey !== "string") {
-            throw new Error("Invalid response: missing apiKey");
+        const result = (yield response.json());
+        if (result.credentialType !== "ApiKey") {
+            throw new Error(`Invalid credentials type: ${result.credentialType}`);
         }
         // Masking API key.
-        core.setSecret(data.apiKey);
-        return data.apiKey;
+        core.setSecret(result.data.apiKey);
+        return result.data.apiKey;
     });
 }
 

@@ -41,15 +41,22 @@ async function getApiKey(
     throw new Error(`Failed to fetch access token: ${response.statusText}`);
   }
 
-  const data = (await response.json()["data"]) as { apiKey?: string };
-  if (!data || typeof data.apiKey !== "string") {
-    throw new Error("Invalid response: missing apiKey");
+  const result = (await response.json()) as {
+    credentialType: string;
+    expiresAt: string;
+    data: {
+      apiKey: string;
+    };
+  };
+
+  if (result.credentialType !== "ApiKey") {
+    throw new Error(`Invalid credentials type: ${result.credentialType}`);
   }
 
   // Masking API key.
-  core.setSecret(data.apiKey);
+  core.setSecret(result.data.apiKey);
 
-  return data.apiKey;
+  return result.data.apiKey;
 }
 
 export { getApiKey };
