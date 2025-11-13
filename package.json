@@ -24,7 +24,8 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@types/node": "^24.10.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.4",

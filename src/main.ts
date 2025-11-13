@@ -3,6 +3,7 @@ import * as core from "@actions/core";
 import { getIdentityToken } from "./identity-token";
 import { getAccessToken } from "./access-token";
 import { getApiKey } from "./api-key";
+import { validateClientId } from "./validate";
 
 async function run(): Promise<void> {
   try {
@@ -11,6 +12,13 @@ async function run(): Promise<void> {
     const domain: string = core.getInput("domain");
     const serverHost: string = core.getInput("server-host");
     const serverPort: string = core.getInput("server-port");
+    const credentialType: string = core.getInput("credential-type");
+
+    // Validate Client ID
+    const isClientIdValid: boolean = validateClientId(clientId);
+    if (isClientIdValid) {
+      core.info("Client ID is valid ✅");
+    }
 
     // Get Identity Token
     const identityToken: string = await getIdentityToken(clientId, domain);
