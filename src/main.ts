@@ -3,7 +3,7 @@ import * as core from "@actions/core";
 import { getIdentityToken } from "./identity-token";
 import { getAccessToken } from "./access-token";
 import { getApiKey } from "./api-key";
-import { validateClientId } from "./validate";
+import { validateClientId, validateCredentialType } from "./validate";
 
 async function run(): Promise<void> {
   try {
@@ -20,6 +20,13 @@ async function run(): Promise<void> {
       core.info("Client ID is valid ✅");
     }
 
+    // Validate Credential Type
+    const isCredentialTypeValid: boolean =
+      validateCredentialType(credentialType);
+    if (isCredentialTypeValid) {
+      core.info(`${credentialType} is a valid credential type ✅`);
+    }
+
     // Get Identity Token
     const identityToken: string = await getIdentityToken(clientId, domain);
 
@@ -30,17 +37,24 @@ async function run(): Promise<void> {
       domain,
     );
 
-    // Get API key
-    const apiKey: string = await getApiKey(
-      clientId,
-      identityToken,
-      accessToken,
-      domain,
-      serverHost,
-      serverPort,
-    );
+    switch (credentialType) {
+      case "ApiKey":
+        // Get API key
+        const apiKey: string = await getApiKey(
+          clientId,
+          identityToken,
+          accessToken,
+          domain,
+          serverHost,
+          serverPort,
+        );
 
-    core.setOutput("api-key", apiKey);
+        core.setOutput("api-key", apiKey);
+        break;
+      default:
+        throw new Error("Something went wrong ⚠️");
+        break;
+    }
   } catch (error) {
     core.setFailed(`${(error as any)?.message ?? error}`);
   }

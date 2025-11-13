@@ -6,6 +6,9 @@ inputs:
   client-id:
     description: "Aembit Edge SDK Client ID"
     required: true
+  credential-type:
+    description: "Aembit Credential Type"
+    required: true
   domain:
     description: "Root domain for Aembit"
     default: "useast2.aembit.io"

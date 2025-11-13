@@ -28,3 +28,21 @@ function validateClientId(clientId: string): boolean {
 }
 
 export { validateClientId };
+
+function validateCredentialType(credentialType: string): boolean {
+  enum CredentialTypes {
+    ApiKey = "ApiKey",
+  }
+
+  if (
+    !Object.values(CredentialTypes).includes(credentialType as CredentialTypes)
+  ) {
+    throw new Error(
+      `Invalid or supported credential type. Valid credential types are: ${Object.values(CredentialTypes).join(", ")}`,
+    );
+  }
+
+  return true;
+}
+
+export { validateCredentialType };

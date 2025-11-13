@@ -26203,13 +26203,25 @@ function run() {
             if (isClientIdValid) {
                 core.info("Client ID is valid ✅");
             }
+            // Validate Credential Type
+            const isCredentialTypeValid = (0, validate_1.validateCredentialType)(credentialType);
+            if (isCredentialTypeValid) {
+                core.info(`${credentialType} is a valid credential type ✅`);
+            }
             // Get Identity Token
             const identityToken = yield (0, identity_token_1.getIdentityToken)(clientId, domain);
             // Get Access Token
             const accessToken = yield (0, access_token_1.getAccessToken)(clientId, identityToken, domain);
-            // Get API key
-            const apiKey = yield (0, api_key_1.getApiKey)(clientId, identityToken, accessToken, domain, serverHost, serverPort);
-            core.setOutput("api-key", apiKey);
+            switch (credentialType) {
+                case "ApiKey":
+                    // Get API key
+                    const apiKey = yield (0, api_key_1.getApiKey)(clientId, identityToken, accessToken, domain, serverHost, serverPort);
+                    core.setOutput("api-key", apiKey);
+                    break;
+                default:
+                    throw new Error("Something went wrong ⚠️");
+                    break;
+            }
         }
         catch (error) {
             core.setFailed(`${(_a = error === null || error === void 0 ? void 0 : error.message) !== null && _a !== void 0 ? _a : error}`);
@@ -26228,6 +26240,7 @@ run();
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.validateClientId = validateClientId;
+exports.validateCredentialType = validateCredentialType;
 const uuid_1 = __nccwpck_require__(764);
 function validateClientId(clientId) {
     // Splitting client ID for validating each component
@@ -26246,6 +26259,16 @@ function validateClientId(clientId) {
     }
     if ((0, uuid_1.validate)(clientIdComponents[5])) {
         throw new Error("Not a valid token.");
+    }
+    return true;
+}
+function validateCredentialType(credentialType) {
+    let CredentialTypes;
+    (function (CredentialTypes) {
+        CredentialTypes["ApiKey"] = "ApiKey";
+    })(CredentialTypes || (CredentialTypes = {}));
+    if (!Object.values(CredentialTypes).includes(credentialType)) {
+        throw new Error(`Invalid or supported credential type. Valid credential types are: ${Object.values(CredentialTypes).join(", ")}`);
     }
     return true;
 }
