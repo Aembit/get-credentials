@@ -14,14 +14,17 @@ This action retrieves temporary credentials from Aembit for use in your GitHub w
     # You can find it by logging into your Aembit tenant, navigating to Trust Providers, selecting your GitHub Trust Provider, and copying the Edge SDK Client ID. 
     # This is a required field.
     client-id: ''
+    
     # Specifies the type of credential to retrieve from Aembit. 
     # Valid values are ApiKey and Unknown.
     # This is a required field.
     credential-type: ''
+
     # Server Workload - Service Endpoint Host
     # Used to access server workload which in turn is used to access credentials. 
     # You can find it by logging into your Aembit tenant, navigating to Server Workloads, selecting your desired Server Workload, and copying the Service Endpoint Host.
     server-host: ''
+    
     # Server Workload - Service Endpoint Port
     # Used to access server workload which in turn is used to access credentials. 
     # You can find it by logging into your Aembit tenant, navigating to Server Workloads, selecting your desired Server Workload, and copying the Service Endpoint Port.
