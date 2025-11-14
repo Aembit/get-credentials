@@ -20,14 +20,12 @@ function validateClientId(clientId: string): boolean {
     throw new Error("Client ID does not appear to be of type GitHub ID token.");
   }
 
-  if (validateUUID(clientIdComponents[5])) {
+  if (!validateUUID(clientIdComponents[5])) {
     throw new Error("Not a valid token.");
   }
 
   return true;
 }
-
-export { validateClientId };
 
 function validateCredentialType(credentialType: string): boolean {
   enum CredentialTypes {
@@ -45,4 +43,4 @@ function validateCredentialType(credentialType: string): boolean {
   return true;
 }
 
-export { validateCredentialType };
+export { validateClientId, validateCredentialType };

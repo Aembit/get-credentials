@@ -26193,11 +26193,13 @@ function run() {
         var _a;
         try {
             // Read inputs for action (defined in action.yml file)
-            const clientId = core.getInput("client-id");
+            const clientId = core.getInput("client-id", { required: true });
             const domain = core.getInput("domain");
             const serverHost = core.getInput("server-host");
             const serverPort = core.getInput("server-port");
-            const credentialType = core.getInput("credential-type");
+            const credentialType = core.getInput("credential-type", {
+                required: true,
+            });
             // Validate Client ID
             const isClientIdValid = (0, validate_1.validateClientId)(clientId);
             if (isClientIdValid) {
@@ -26257,7 +26259,7 @@ function validateClientId(clientId) {
     if (clientIdComponents[4] !== "github_idtoken") {
         throw new Error("Client ID does not appear to be of type GitHub ID token.");
     }
-    if ((0, uuid_1.validate)(clientIdComponents[5])) {
+    if (!(0, uuid_1.validate)(clientIdComponents[5])) {
         throw new Error("Not a valid token.");
     }
     return true;

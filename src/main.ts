@@ -8,11 +8,13 @@ import { validateClientId, validateCredentialType } from "./validate";
 async function run(): Promise<void> {
   try {
     // Read inputs for action (defined in action.yml file)
-    const clientId: string = core.getInput("client-id");
+    const clientId: string = core.getInput("client-id", { required: true });
     const domain: string = core.getInput("domain");
     const serverHost: string = core.getInput("server-host");
     const serverPort: string = core.getInput("server-port");
-    const credentialType: string = core.getInput("credential-type");
+    const credentialType: string = core.getInput("credential-type", {
+      required: true,
+    });
 
     // Validate Client ID
     const isClientIdValid: boolean = validateClientId(clientId);
