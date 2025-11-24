@@ -6,7 +6,7 @@ This action retrieves temporary credentials from Aembit for use in your GitHub w
 ## Usage
 
 ```yaml
-- uses: Aembit/credentials@v1
+- uses: Aembit/get-credentials@v1
   id: step-id # This is required as output of this step is passed to the next step(s).
   with:
     # Aembit Edge SDK Client ID. 
