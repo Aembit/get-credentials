@@ -20,7 +20,7 @@ function validateClientId(clientId: string): boolean {
     throw new Error("Client ID does not appear to be of type GitHub ID token.");
   }
 
-  if (!validateUUID(clientIdComponents[5])) {
+  if (!validateUUID(clientIdComponents[5].trim())) {
     throw new Error("Not a valid token.");
   }
 

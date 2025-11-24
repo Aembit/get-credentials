@@ -26259,7 +26259,7 @@ function validateClientId(clientId) {
     if (clientIdComponents[4] !== "github_idtoken") {
         throw new Error("Client ID does not appear to be of type GitHub ID token.");
     }
-    if (!(0, uuid_1.validate)(clientIdComponents[5])) {
+    if (!(0, uuid_1.validate)(clientIdComponents[5].trim())) {
         throw new Error("Not a valid token.");
     }
     return true;
