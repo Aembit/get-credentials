@@ -15,18 +15,12 @@ async function run(): Promise<void> {
       required: true,
     });
 
-    // Validate Client ID
-    const isClientIdValid: boolean = validateClientId(clientId);
-    if (isClientIdValid) {
-      core.info("Client ID is valid ✅");
-    }
+    validateClientId(clientId);
+    core.info("Client ID is valid ✅");
 
     // Validate Credential Type
-    const isCredentialTypeValid: boolean =
-      validateCredentialType(credentialType);
-    if (isCredentialTypeValid) {
-      core.info(`${credentialType} is a valid credential type ✅`);
-    }
+    validateCredentialType(credentialType);
+    core.info(`${credentialType} is a valid credential type ✅`);
 
     // Get Identity Token
     const identityToken: string = await getIdentityToken(clientId, domain);
