@@ -26200,16 +26200,11 @@ function run() {
             const credentialType = core.getInput("credential-type", {
                 required: true,
             });
-            // Validate Client ID
-            const isClientIdValid = (0, validate_1.validateClientId)(clientId);
-            if (isClientIdValid) {
-                core.info("Client ID is valid ✅");
-            }
+            (0, validate_1.validateClientId)(clientId);
+            core.info("Client ID is valid ✅");
             // Validate Credential Type
-            const isCredentialTypeValid = (0, validate_1.validateCredentialType)(credentialType);
-            if (isCredentialTypeValid) {
-                core.info(`${credentialType} is a valid credential type ✅`);
-            }
+            (0, validate_1.validateCredentialType)(credentialType);
+            core.info(`${credentialType} is a valid credential type ✅`);
             // Get Identity Token
             const identityToken = yield (0, identity_token_1.getIdentityToken)(clientId, domain);
             // Get Access Token
@@ -26260,10 +26255,11 @@ function validateClientId(clientId) {
     if (clientIdComponents[4] !== "github_idtoken") {
         throw new Error("Client ID does not appear to be of type GitHub ID token.");
     }
-    if (!(0, uuid_1.validate)(clientIdComponents[5].trim())) {
+    const id = clientIdComponents[5].trim();
+    if (!(0, uuid_1.validate)(id) || (0, uuid_1.version)(id) !== 4) {
         throw new Error("Not a valid token.");
     }
-    return true;
+    return;
 }
 function validateCredentialType(credentialType) {
     let CredentialTypes;
@@ -26273,7 +26269,7 @@ function validateCredentialType(credentialType) {
     if (!Object.values(CredentialTypes).includes(credentialType)) {
         throw new Error(`Invalid or supported credential type. Valid credential types are: ${Object.values(CredentialTypes).join(", ")}`);
     }
-    return true;
+    return;
 }
 
 
