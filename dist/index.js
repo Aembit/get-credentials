@@ -26184,9 +26184,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(7484));
-const identity_token_1 = __nccwpck_require__(927);
 const access_token_1 = __nccwpck_require__(8811);
 const api_key_1 = __nccwpck_require__(5195);
+const identity_token_1 = __nccwpck_require__(927);
 const validate_1 = __nccwpck_require__(4935);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -26217,12 +26217,13 @@ function run() {
             switch (credentialType) {
                 case "ApiKey":
                     // Get API key
-                    const apiKey = yield (0, api_key_1.getApiKey)(clientId, identityToken, accessToken, domain, serverHost, serverPort);
-                    core.setOutput("api-key", apiKey);
+                    {
+                        const apiKey = yield (0, api_key_1.getApiKey)(clientId, identityToken, accessToken, domain, serverHost, serverPort);
+                        core.setOutput("api-key", apiKey);
+                    }
                     break;
                 default:
                     throw new Error("Something went wrong ⚠️");
-                    break;
             }
         }
         catch (error) {
