@@ -18,8 +18,14 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc && ncc build",
-    "format": "prettier --write src/**/*.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "biome lint",
+    "lint:write": "biome lint --write",
+    "format": "biome format",
+    "format:write": "biome format --write",
+    "check": "biome check",
+    "check:write": "biome check --write",
+    "check:ci": "biome ci"
   },
   "dependencies": {
     "@actions/core": "^1.11.1",
