@@ -1,0 +1,30 @@
+name: Check linting and formatting
+
+on:
+  push:
+    branches:
+      - main
+      - 'OPS-*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run check:ci
+        run: yarn check:ci
