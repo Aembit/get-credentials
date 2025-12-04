@@ -35,8 +35,6 @@ Will this expose any secrets in the course of an Action execution?
 
 - [ ] Documentation: I have made corresponding changes to the documentation (README.md, action.yml, etc.).
 
-- [ ] Coverage: My unit tests pass locally with a coverage of at least 90%.
-
 - [ ] Security: I have verified to the best of my ability that this change introduces no new security vulnerabilities.
 
 - [ ] Build: I have run `$ yarn build` before my final commit to have an up-to-date distribution of the Action.
