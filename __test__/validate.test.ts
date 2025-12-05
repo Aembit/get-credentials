@@ -58,12 +58,11 @@ describe("validateClientId", () => {
       validateClientId(`aembit:useast2:a12345::github_idtoken:${uuidv4()}`),
     ).toThrowError("Client ID does not appear to be for type identity.");
   });
-  //TODO: what is a real value that could go here that is wrong?
   it("should throw an error with invalid identity field", async ({
     expect,
   }) => {
     expect(() =>
-      validateClientId(`aembit:useast2:a12345:todo:github_idtoken:${uuidv4()}`),
+      validateClientId(`aembit:useast2:a12345:credential:github_idtoken:${uuidv4()}`),
     ).toThrowError("Client ID does not appear to be for type identity.");
   });
 
