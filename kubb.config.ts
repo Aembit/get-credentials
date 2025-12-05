@@ -6,7 +6,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
   input: {
-    path: './__test__/edge-api.yaml',
+    path: './__test__/resources/edge-api.yaml',
   },
   output: {
     path: './__test__/gen',
@@ -17,6 +17,7 @@ export default defineConfig({
     pluginFaker({
       output: {
         path: './mocks.ts',
+        // seed ensures same generated mock values each time
         seed: [100]
       },
     }),
@@ -24,6 +25,7 @@ export default defineConfig({
       output: {
         path: './handlers.ts',
       },
+      // since we are interpolating a URL, this must be set or tests expect to hit localhost and fail
       baseURL: 'https://a12345.ec.aembit.io',
       parser: 'faker'
     }),
