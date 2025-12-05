@@ -62,7 +62,9 @@ describe("validateClientId", () => {
     expect,
   }) => {
     expect(() =>
-      validateClientId(`aembit:useast2:a12345:credential:github_idtoken:${uuidv4()}`),
+      validateClientId(
+        `aembit:useast2:a12345:credential:github_idtoken:${uuidv4()}`,
+      ),
     ).toThrowError("Client ID does not appear to be for type identity.");
   });
 
