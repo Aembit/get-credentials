@@ -1,6 +1,6 @@
-import { validate as validateUUID } from "uuid";
+import { version as uuidVersion, validate as validateUUID } from "uuid";
 
-function validateClientId(clientId: string): boolean {
+function validateClientId(clientId: string) {
   // Splitting client ID for validating each component
   const clientIdComponents: string[] = clientId.split(":");
 
@@ -20,14 +20,15 @@ function validateClientId(clientId: string): boolean {
     throw new Error("Client ID does not appear to be of type GitHub ID token.");
   }
 
-  if (!validateUUID(clientIdComponents[5].trim())) {
+  const id = clientIdComponents[5].trim();
+  if (!validateUUID(id) || uuidVersion(id) !== 4) {
     throw new Error("Not a valid token.");
   }
 
-  return true;
+  return;
 }
 
-function validateCredentialType(credentialType: string): boolean {
+function validateCredentialType(credentialType: string) {
   enum CredentialTypes {
     ApiKey = "ApiKey",
   }
@@ -40,7 +41,7 @@ function validateCredentialType(credentialType: string): boolean {
     );
   }
 
-  return true;
+  return;
 }
 
 export { validateClientId, validateCredentialType };
