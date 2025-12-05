@@ -1,0 +1,1 @@
+{"type":"object","properties":{"identityToken":{"type":"string","description":"Identity token for workload attestation","nullable":true}},"additionalProperties":false,"description":"JWT-based identity token attestation for CI/CD platforms","x-readme-ref-name":"IdentityTokenAttestationDTO"}
