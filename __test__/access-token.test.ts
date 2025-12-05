@@ -9,6 +9,8 @@ import {
 } from "./gen/handlers";
 
 const server = setupServer(edgeApiAuthHandler());
+
+// We validate these values in other functions prior to this call in main, so assume they are correct in these tests.
 const reqBody = {
   clientId: `aembit:useast2:a12345:identity:github_idtoken:${uuidv4()}`,
   idToken:
