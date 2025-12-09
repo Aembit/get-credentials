@@ -44,4 +44,27 @@ function validateCredentialType(credentialType: string) {
   return;
 }
 
-export { validateClientId, validateCredentialType };
+function validateOidcToken(token: string) {
+  // Validate that the token is not empty
+  if (!token || token.trim() === "") {
+    throw new Error("Identity token is empty");
+  }
+
+  // Validate that the token is a valid JWT format (3 parts separated by dots)
+  const parts = token.split(".");
+  if (parts.length !== 3) {
+    throw new Error("Identity token is not in valid JWT format");
+  }
+
+  // Validate each part is base64url encoded (only alphanumeric, -, _, and =)
+  const base64UrlRegex = /^[A-Za-z0-9_-]+={0,2}$/;
+  for (const part of parts) {
+    if (!part || !base64UrlRegex.test(part)) {
+      throw new Error("Identity token contains invalid base64url encoding");
+    }
+  }
+
+  return;
+}
+
+export { validateClientId, validateCredentialType, validateOidcToken };

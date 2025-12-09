@@ -1,6 +1,10 @@
 import { v4 as uuidv4, v6 as uuidv6 } from "uuid";
 import { describe, it } from "vitest";
-import { validateClientId, validateCredentialType } from "../src/validate";
+import {
+  validateClientId,
+  validateCredentialType,
+  validateOidcToken,
+} from "../src/validate";
 
 describe("validateClientId", () => {
   it("should call with no error for a valid UUID client-id", () => {
@@ -111,5 +115,92 @@ describe("validateCredentialType", () => {
     expect(() => validateCredentialType("GitLab")).toThrowError(
       /^Invalid or supported credential type\. Valid credential types are:.*/,
     );
+  });
+});
+
+describe("validateOidcToken", () => {
+  const validToken =
+    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjAxIiwiYXVkIjpbIjEyODk4ODg0NTk2ODYzIl0sImlzcyI6Imh0dHBzOi8vYXV0aGxldGUuY29tIiwiZXhwIjoxNTU5MTA2ODE1LCJpYXQiOjE1NTkwMjA0MTUsIm5vbmNlIjoibi0wUzZfV3pBMk1qIn0.5uSFMTGnubyvtiExHc9l7HT9UsF8a_Qb0STtWzyclBk";
+
+  it("should call with no error for a valid OIDC token", () => {
+    validateOidcToken(validToken);
+  });
+
+  it("should accept tokens with hyphens and underscores", () => {
+    validateOidcToken(
+      "eyJ-bGciOiJ_UzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.5uSFMTGnubyvti_xHc9l-HT9UsF8a_Qb0STtWzyclBk",
+    );
+  });
+
+  it("should accept tokens with padding equals signs", () => {
+    validateOidcToken(
+      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0=.5uSFMTGnubyvtiExHc9l7HT9UsF8a_Qb0STtWzyclBk",
+    );
+  });
+
+  it("should throw an error with empty string", async ({ expect }) => {
+    expect(() => validateOidcToken("")).toThrowError("Identity token is empty");
+  });
+
+  it("should throw an error with whitespace only", async ({ expect }) => {
+    expect(() => validateOidcToken("   ")).toThrowError(
+      "Identity token is empty",
+    );
+  });
+
+  it("should throw an error with only one part", async ({ expect }) => {
+    expect(() => validateOidcToken("invalidtoken")).toThrowError(
+      "Identity token is not in valid JWT format",
+    );
+  });
+
+  it("should throw an error with only two parts", async ({ expect }) => {
+    expect(() => validateOidcToken("header.payload")).toThrowError(
+      "Identity token is not in valid JWT format",
+    );
+  });
+
+  it("should throw an error with four parts", async ({ expect }) => {
+    expect(() =>
+      validateOidcToken("header.payload.signature.extra"),
+    ).toThrowError("Identity token is not in valid JWT format");
+  });
+
+  it("should throw an error with invalid characters in header", async ({
+    expect,
+  }) => {
+    expect(() =>
+      validateOidcToken("invalid@chars.eyJzdWIiOiJ0ZXN0In0.signature"),
+    ).toThrowError("Identity token contains invalid base64url encoding");
+  });
+
+  it("should throw an error with invalid characters in payload", async ({
+    expect,
+  }) => {
+    expect(() =>
+      validateOidcToken("eyJhbGciOiJIUzI1NiJ9.invalid!payload.signature"),
+    ).toThrowError("Identity token contains invalid base64url encoding");
+  });
+
+  it("should throw an error with invalid characters in signature", async ({
+    expect,
+  }) => {
+    expect(() =>
+      validateOidcToken(
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.invalid$signature",
+      ),
+    ).toThrowError("Identity token contains invalid base64url encoding");
+  });
+
+  it("should throw an error with empty parts", async ({ expect }) => {
+    expect(() => validateOidcToken("..signature")).toThrowError(
+      "Identity token contains invalid base64url encoding",
+    );
+  });
+
+  it("should throw an error with one empty part", async ({ expect }) => {
+    expect(() =>
+      validateOidcToken("eyJhbGciOiJIUzI1NiJ9..signature"),
+    ).toThrowError("Identity token contains invalid base64url encoding");
   });
 });
