@@ -26120,14 +26120,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getIdentityToken = getIdentityToken;
 const core = __importStar(__nccwpck_require__(7484));
+const validate_1 = __nccwpck_require__(4935);
 function getIdentityToken(clientId, domain) {
     return __awaiter(this, void 0, void 0, function* () {
         const tenantId = clientId.split(":")[2];
         const url = `https://${tenantId}.id.${domain}`;
         core.info(`Fetching token ID for ${url}`);
-        // Request an OpenID Connect (OIDC) token from GitHub’s OIDC provider
+        // Request an OpenID Connect (OIDC) token from GitHub's OIDC provider
         const metadata = yield core.getIDToken(url);
         const identityToken = Buffer.from(metadata).toString("utf-8");
+        // Validate that the token is a valid JWT format
+        (0, validate_1.validateOidcToken)(identityToken);
         return identityToken;
     });
 }
@@ -26183,6 +26186,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.run = run;
 const core = __importStar(__nccwpck_require__(7484));
 const access_token_1 = __nccwpck_require__(8811);
 const api_key_1 = __nccwpck_require__(5195);
@@ -26190,7 +26194,6 @@ const identity_token_1 = __nccwpck_require__(927);
 const validate_1 = __nccwpck_require__(4935);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a;
         try {
             // Read inputs for action (defined in action.yml file)
             const clientId = core.getInput("client-id", { required: true });
@@ -26222,7 +26225,8 @@ function run() {
             }
         }
         catch (error) {
-            core.setFailed(`${(_a = error === null || error === void 0 ? void 0 : error.message) !== null && _a !== void 0 ? _a : error}`);
+            const message = error instanceof Error ? error.message : String(error);
+            core.setFailed(message);
         }
     });
 }
@@ -26239,6 +26243,7 @@ run();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.validateClientId = validateClientId;
 exports.validateCredentialType = validateCredentialType;
+exports.validateOidcToken = validateOidcToken;
 const uuid_1 = __nccwpck_require__(764);
 function validateClientId(clientId) {
     // Splitting client ID for validating each component
@@ -26268,6 +26273,25 @@ function validateCredentialType(credentialType) {
     })(CredentialTypes || (CredentialTypes = {}));
     if (!Object.values(CredentialTypes).includes(credentialType)) {
         throw new Error(`Invalid or supported credential type. Valid credential types are: ${Object.values(CredentialTypes).join(", ")}`);
+    }
+    return;
+}
+function validateOidcToken(token) {
+    // Validate that the token is not empty
+    if (!token || token.trim() === "") {
+        throw new Error("Identity token is empty");
+    }
+    // Validate that the token is a valid JWT format (3 parts separated by dots)
+    const parts = token.split(".");
+    if (parts.length !== 3) {
+        throw new Error("Identity token is not in valid JWT format");
+    }
+    // Validate each part is base64url encoded (only alphanumeric, -, _, and =)
+    const base64UrlRegex = /^[A-Za-z0-9_-]+={0,2}$/;
+    for (const part of parts) {
+        if (!part || !base64UrlRegex.test(part)) {
+            throw new Error("Identity token contains invalid base64url encoding");
+        }
     }
     return;
 }
