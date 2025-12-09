@@ -51,9 +51,13 @@ async function run(): Promise<void> {
       default:
         throw new Error("Something went wrong ⚠️");
     }
-  } catch (error) {
-    core.setFailed(`${(error as any)?.message ?? error}`);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    core.setFailed(message);
   }
 }
+
+// for testing
+export { run };
 
 run();
