@@ -15,9 +15,9 @@
   "license": "MIT",
   "author": "devops@aembit.io",
   "type": "commonjs",
-  "main": "lib/main.js",
+  "main": "lib/src/main.js",
   "scripts": {
-    "build": "tsc && ncc build",
+    "build": "tsc && ncc build lib/src/main.js -o dist",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "generate": "kubb generate",
