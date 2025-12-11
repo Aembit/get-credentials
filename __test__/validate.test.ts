@@ -4,6 +4,7 @@ import {
   validateClientId,
   validateCredentialType,
   validateOidcToken,
+  validateServerPort,
 } from "../src/validate";
 
 describe("validateClientId", () => {
@@ -113,7 +114,7 @@ describe("validateCredentialType", () => {
     expect,
   }) => {
     expect(() => validateCredentialType("GitLab")).toThrowError(
-      /^Invalid or supported credential type\. Valid credential types are:.*/,
+      /^Invalid or currently unsupported credential type\. Valid credential types are:.*/,
     );
   });
 });
@@ -202,5 +203,57 @@ describe("validateOidcToken", () => {
     expect(() =>
       validateOidcToken("eyJhbGciOiJIUzI1NiJ9..signature"),
     ).toThrowError("Identity token contains invalid base64url encoding");
+  });
+});
+
+describe("validateServerPort", () => {
+  // Valid port numbers
+  it("should return a number for valid port in range", ({ expect }) => {
+    const result = validateServerPort("443");
+    expect(result).toBe(443);
+    expect(typeof result).toBe("number");
+  });
+
+  it("should return 0 for minimum valid port", ({ expect }) => {
+    const result = validateServerPort("0");
+    expect(result).toBe(0);
+  });
+
+  it("should return 65535 for maximum valid port", ({ expect }) => {
+    const result = validateServerPort("65535");
+    expect(result).toBe(65535);
+  });
+
+  // Invalid: cannot convert to number
+  it("should throw an error for empty string", ({ expect }) => {
+    expect(() => validateServerPort("")).toThrowError(
+      /Provided server port value cannot be converted to a number:/,
+    );
+  });
+
+  it("should throw an error for non-numeric string", ({ expect }) => {
+    expect(() => validateServerPort("abc")).toThrowError(
+      /Provided server port value cannot be converted to a number:/,
+    );
+  });
+
+  // Invalid: not an integer
+  it("should throw an error for decimal numbers", ({ expect }) => {
+    expect(() => validateServerPort("80.5")).toThrowError(
+      /Provided server port value must be an integer:/,
+    );
+  });
+
+  // Invalid: out of range
+  it("should throw an error for negative port number", ({ expect }) => {
+    expect(() => validateServerPort("-1")).toThrowError(
+      /Provided server port value must be in range 0-65535:/,
+    );
+  });
+
+  it("should throw an error for port above maximum", ({ expect }) => {
+    expect(() => validateServerPort("65536")).toThrowError(
+      /Provided server port value must be in range 0-65535:/,
+    );
   });
 });

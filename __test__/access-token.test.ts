@@ -1,12 +1,12 @@
 import { setupServer } from "msw/node";
 import { v4 as uuidv4 } from "uuid";
 import { afterAll, afterEach, beforeAll, describe, it } from "vitest";
-import { getAccessToken } from "../src/access-token";
 import {
   edgeApiAuthHandler,
   edgeApiGetCredentialsHandlerResponse400,
   edgeApiGetCredentialsHandlerResponse500,
-} from "./gen/handlers";
+} from "../gen/handlers";
+import { getAccessToken } from "../src/access-token";
 
 const server = setupServer(edgeApiAuthHandler());
 
