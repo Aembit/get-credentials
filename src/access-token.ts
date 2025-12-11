@@ -1,4 +1,5 @@
 import * as core from "@actions/core";
+import { edgeApiAuth } from "../gen/client/edgeApiAuth";
 
 async function getAccessToken(
   clientId: string,
@@ -6,32 +7,32 @@ async function getAccessToken(
   domain: string,
 ): Promise<string> {
   const tenantId: string = clientId.split(":")[2];
-  const url: string = `https://${tenantId}.ec.${domain}/edge/v1/auth`;
+  const url: string = `https://${tenantId}.ec.${domain}`;
 
-  core.info(`Fetch access token (url): ${url}`);
+  core.info(`Fetch access token (url): ${url}/edge/v1/auth`);
 
   // Request an access token from Aembit Edge server
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  const response = await edgeApiAuth(
+    {
       clientId: clientId,
       client: {
         github: {
           identityToken: identityToken,
         },
       },
-    }),
-  });
+    },
+    undefined,
+    {
+      baseURL: url,
+    },
+  );
 
   core.info(`Response status: ${response.status}`);
-  if (!response.ok) {
+  if (response.status !== 200) {
     throw new Error(`Failed to fetch access token: ${response.statusText}`);
   }
 
-  const data = (await response.json()) as { accessToken?: string };
+  const data = response.data as { accessToken?: string };
   if (!data || typeof data.accessToken !== "string") {
     throw new Error("Invalid response: missing accessToken");
   }

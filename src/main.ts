@@ -1,8 +1,12 @@
 import * as core from "@actions/core";
 import { getAccessToken } from "./access-token";
-import { getApiKey } from "./api-key";
+import { getCredential, setOutputs } from "./credential";
 import { getIdentityToken } from "./identity-token";
-import { validateClientId, validateCredentialType } from "./validate";
+import {
+  validateClientId,
+  validateCredentialType,
+  validateServerPort,
+} from "./validate";
 
 async function run(): Promise<void> {
   try {
@@ -22,6 +26,8 @@ async function run(): Promise<void> {
     validateCredentialType(credentialType);
     core.info(`${credentialType} is a valid credential type ✅`);
 
+    const serverPortNum = validateServerPort(serverPort);
+
     // Get Identity Token
     const identityToken: string = await getIdentityToken(clientId, domain);
 
@@ -32,25 +38,16 @@ async function run(): Promise<void> {
       domain,
     );
 
-    switch (credentialType) {
-      case "ApiKey":
-        // Get API key
-        {
-          const apiKey: string = await getApiKey(
-            clientId,
-            identityToken,
-            accessToken,
-            domain,
-            serverHost,
-            serverPort,
-          );
-
-          core.setOutput("api-key", apiKey);
-        }
-        break;
-      default:
-        throw new Error("Something went wrong ⚠️");
-    }
+    const credentialData = await getCredential(
+      credentialType,
+      clientId,
+      identityToken,
+      accessToken,
+      domain,
+      serverHost,
+      serverPortNum,
+    );
+    setOutputs(credentialData.credentialType, credentialData.data);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     core.setFailed(message);
