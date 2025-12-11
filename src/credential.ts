@@ -45,6 +45,7 @@ async function getCredential(
       baseURL: url,
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
       },
     },
   );

@@ -24,6 +24,9 @@ async function getAccessToken(
     undefined,
     {
       baseURL: url,
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
   );
 
