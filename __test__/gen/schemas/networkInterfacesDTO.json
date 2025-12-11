@@ -1,1 +1,0 @@
-{"type":"object","properties":{"name":{"type":"string","nullable":true},"macAddress":{"type":"string","nullable":true},"ipv4Addresses":{"type":"array","items":{"type":"string"},"nullable":true},"ipv6Addresses":{"type":"array","items":{"type":"string"},"nullable":true}},"additionalProperties":false,"x-readme-ref-name":"NetworkInterfacesDTO"}

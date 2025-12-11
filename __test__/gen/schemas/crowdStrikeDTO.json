@@ -1,1 +1,0 @@
-{"type":"object","properties":{"agentId":{"type":"string","description":"Unique identifier for the CrowdStrike agent","nullable":true}},"additionalProperties":false,"description":"CrowdStrike agent information for endpoint security attestation","x-readme-ref-name":"CrowdStrikeDTO"}

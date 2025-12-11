@@ -3,17 +3,31 @@ import { pluginFaker } from '@kubb/plugin-faker'
 import { pluginOas } from '@kubb/plugin-oas'
 import { pluginMsw } from '@kubb/plugin-msw'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginClient } from '@kubb/plugin-client'
 
 export default defineConfig({
   input: {
-    path: './__test__/resources/edge-api.yaml',
+    path: './resources/edge-api.yaml',
   },
   output: {
-    path: './__test__/gen',
+    path: './gen',
+    extension: {
+      extName: '.ts',
+      addExtension: false
+    }
   },
   plugins: [
     pluginOas(),
     pluginTs(),
+    // Generate API client for production use
+    pluginClient({
+      output: {
+        path: './client',
+      },
+      importPath: '@kubb/plugin-client/clients/fetch',
+      dataReturnType: 'full'
+    }),
+    // Generate test mocks
     pluginFaker({
       output: {
         path: './mocks.ts',

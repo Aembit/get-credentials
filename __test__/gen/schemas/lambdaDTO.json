@@ -1,1 +1,0 @@
-{"type":"object","properties":{"arn":{"type":"string","description":"AWS Lambda function ARN","nullable":true}},"additionalProperties":false,"description":"AWS Lambda function information for serverless workload attestation","x-readme-ref-name":"LambdaDTO"}

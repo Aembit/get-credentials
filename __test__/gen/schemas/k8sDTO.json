@@ -1,1 +1,0 @@
-{"type":"object","properties":{"serviceAccountToken":{"type":"string","description":"Kubernetes service account JWT token","nullable":true}},"additionalProperties":false,"description":"Kubernetes-specific attestation data for Kubernetes pod identification","x-readme-ref-name":"K8sDTO"}
