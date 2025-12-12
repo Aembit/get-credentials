@@ -410,6 +410,45 @@ describe("getCredential", () => {
       `Bearer ${reqBody.accessToken}`,
     );
   });
+
+  it("sends Content-Type: application/json header", async ({ expect }) => {
+    vi.mocked(core.info).mockImplementation(() => {});
+
+    let capturedHeaders: Headers | null = null;
+
+    server.use(
+      edgeApiGetCredentialsHandler(async (info) => {
+        capturedHeaders = info.request.headers;
+        return new Response(
+          JSON.stringify({
+            credentialType: "ApiKey",
+            expiresAt: "2024-12-31T23:59:59Z",
+            data: {
+              apiKey: "test-api-key-67890",
+            },
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+      }),
+    );
+
+    await getCredential(
+      "ApiKey",
+      reqBody.clientId,
+      reqBody.identityToken,
+      reqBody.accessToken,
+      reqBody.domain,
+      reqBody.serverHost,
+      reqBody.serverPort,
+    );
+
+    expect(capturedHeaders?.get("Content-Type")).toBe("application/json");
+  });
 });
 
 describe("setOutputs", () => {

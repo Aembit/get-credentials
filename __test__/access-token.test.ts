@@ -55,4 +55,29 @@ describe("getAccessToken", () => {
       getAccessToken(reqBody.clientId, reqBody.idToken, reqBody.domain),
     ).rejects.toThrowError();
   });
+
+  it("sends Content-Type: application/json header", async ({ expect }) => {
+    let capturedHeaders: Headers | null = null;
+
+    server.use(
+      edgeApiAuthHandler(async (info) => {
+        capturedHeaders = info.request.headers;
+        return new Response(
+          JSON.stringify({
+            accessToken: "test-token-12345",
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+      }),
+    );
+
+    await getAccessToken(reqBody.clientId, reqBody.idToken, reqBody.domain);
+
+    expect(capturedHeaders?.get("Content-Type")).toBe("application/json");
+  });
 });
