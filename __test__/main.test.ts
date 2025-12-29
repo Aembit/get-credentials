@@ -73,6 +73,7 @@ describe("run", () => {
     // Verify inputs are read
     expect(core.getInput).toHaveBeenCalledWith("client-id", {
       required: true,
+      trimWhitespace: true
     });
     expect(core.getInput).toHaveBeenCalledWith("domain");
     expect(core.getInput).toHaveBeenCalledWith("server-host");

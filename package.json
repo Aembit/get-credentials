@@ -49,6 +49,7 @@
     "@vitest/coverage-v8": "^4.0.15",
     "msw": "^2.12.4",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.15",
+    "yaml": "^2.8.2"
   }
 }

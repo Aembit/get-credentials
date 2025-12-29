@@ -11,7 +11,10 @@ import {
 async function run(): Promise<void> {
   try {
     // Read inputs for action (defined in action.yml file)
-    const clientId: string = core.getInput("client-id", { required: true });
+    const clientId: string = core.getInput("client-id", {
+      required: true,
+      trimWhitespace: true,
+    });
     const domain: string = core.getInput("domain");
     const serverHost: string = core.getInput("server-host");
     const serverPort: string = core.getInput("server-port");
