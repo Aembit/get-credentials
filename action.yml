@@ -2,6 +2,10 @@ name: "Aembit Credentials"
 description: "GitHub action to fetch Aembit credentials"
 author: "Aembit"
 
+branding:
+  icon: shield
+  color: orange
+
 inputs:
   client-id:
     description: "Aembit Edge SDK Client ID"
