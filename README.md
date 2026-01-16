@@ -1,4 +1,4 @@
-# Aembit Credentials (GitHub Action)
+# Aembit Credentials Action
 
 ## Overview
 
