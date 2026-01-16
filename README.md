@@ -4,6 +4,9 @@
 
 This action retrieves temporary credentials from Aembit for use in your GitHub workflows. It enables secure, secretless access to external systems like cloud providers or APIs by dynamically fetching scoped credentials at runtime. This helps improves security within CI/CD pipelines.
 
+> [!NOTE]
+> More documentation can be found in the [Aembit docs](https://docs.aembit.io/user-guide/deploy-install/ci-cd/github/).
+
 ## Requirements
 
 ### Workflow Permissions
