@@ -36,7 +36,7 @@ describe("getIdentityToken", () => {
     expect(token).toBe(mockValidToken);
     expect(core.getIDToken).toHaveBeenCalledWith("https://a12345.id.aembit.io");
     expect(core.info).toHaveBeenCalledWith(
-      "Fetching token ID for https://a12345.id.aembit.io",
+      "Fetching identity token for https://a12345.id.aembit.io",
     );
     expect(validate.validateOidcToken).toHaveBeenCalledWith(mockValidToken);
   });

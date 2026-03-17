@@ -8,7 +8,8 @@ async function getIdentityToken(
   const tenantId: string = clientId.split(":")[2];
   const url = `https://${tenantId}.id.${domain}`;
 
-  core.info(`Fetching token ID for ${url}`);
+  core.info(`Fetching identity token for ${url}`);
+  core.debug(`Identity token audience: ${url}`);
 
   // Request an OpenID Connect (OIDC) token from GitHub's OIDC provider
   const metadata = await core.getIDToken(url);
@@ -17,6 +18,7 @@ async function getIdentityToken(
   // Validate that the token is a valid JWT format
   validateOidcToken(identityToken);
 
+  core.debug("Identity token received and validated successfully");
   return identityToken;
 }
 
