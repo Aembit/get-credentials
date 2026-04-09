@@ -22,6 +22,10 @@ async function run(): Promise<void> {
       required: true,
     });
 
+    core.debug(
+      `Inputs: domain=${domain}, serverHost=${serverHost}, serverPort=${serverPort}, credentialType=${credentialType}`,
+    );
+
     validateClientId(clientId);
     core.info("Client ID is valid ✅");
 
@@ -33,6 +37,7 @@ async function run(): Promise<void> {
 
     // Get Identity Token
     const identityToken: string = await getIdentityToken(clientId, domain);
+    core.info("Identity token obtained ✅");
 
     // Get Access Token
     const accessToken: string = await getAccessToken(
@@ -40,6 +45,7 @@ async function run(): Promise<void> {
       identityToken,
       domain,
     );
+    core.info("Access token obtained ✅");
 
     const credentialData = await getCredential(
       credentialType,
@@ -51,8 +57,10 @@ async function run(): Promise<void> {
       serverPortNum,
     );
     setOutputs(credentialData.credentialType, credentialData.data);
+    core.info("Credential outputs set ✅");
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
+    core.debug(`Action failed with error: ${message}`);
     core.setFailed(message);
   }
 }
