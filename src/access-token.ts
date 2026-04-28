@@ -17,7 +17,9 @@ async function getAccessToken(
   const url: string = `https://${tenantId}.ec.${domain}`;
 
   core.info(`Fetching access token from ${url}/edge/v1/auth`);
-  core.debug(`Access token request: clientId=${clientId}, resourceSetId=${resourceSetId}`);
+  core.debug(
+    `Access token request: clientId=${clientId}, resourceSetId=${resourceSetId}`,
+  );
 
   let lastError: unknown;
 
