@@ -18,12 +18,13 @@ async function run(): Promise<void> {
     const domain: string = core.getInput("domain");
     const serverHost: string = core.getInput("server-host");
     const serverPort: string = core.getInput("server-port");
+    const resourceSetId: string = core.getInput("resource-set-id");
     const credentialType: string = core.getInput("credential-type", {
       required: true,
     });
 
     core.debug(
-      `Inputs: domain=${domain}, serverHost=${serverHost}, serverPort=${serverPort}, credentialType=${credentialType}`,
+      `Inputs: domain=${domain}, serverHost=${serverHost}, serverPort=${serverPort}, resourceSetId=${resourceSetId}, credentialType=${credentialType}`,
     );
 
     validateClientId(clientId);
@@ -44,6 +45,7 @@ async function run(): Promise<void> {
       clientId,
       identityToken,
       domain,
+      resourceSetId,
     );
     core.info("Access token obtained ✅");
 
@@ -55,6 +57,7 @@ async function run(): Promise<void> {
       domain,
       serverHost,
       serverPortNum,
+      resourceSetId,
     );
     setOutputs(credentialData.credentialType, credentialData.data);
     core.info("Credential outputs set ✅");

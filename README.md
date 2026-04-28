@@ -47,6 +47,10 @@ tested.
     # This is a required field.
     credential-type: ''
 
+    # Aembit Resource Set ID. 
+    # Optional. If not specified, the Default Resource Set is used.
+    resource-set-id: ''
+
     # Server Workload - Service Endpoint Host
     # Used to access server workload which in turn is used to access credentials. 
     # You can find it by logging into your Aembit tenant, navigating to Server Workloads, selecting your desired Server Workload, and copying the Service Endpoint Host.

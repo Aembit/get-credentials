@@ -50,7 +50,6 @@ describe("getCredential", () => {
         },
       }),
     );
-
     const result = await getCredential(
       "ApiKey",
       reqBody.clientId,
@@ -59,6 +58,7 @@ describe("getCredential", () => {
       reqBody.domain,
       reqBody.serverHost,
       reqBody.serverPort,
+      "",
     );
 
     expect(result).toEqual({
@@ -98,6 +98,7 @@ describe("getCredential", () => {
       reqBody.domain,
       reqBody.serverHost,
       reqBody.serverPort,
+      "",
     );
 
     expect(result).toEqual({
@@ -133,6 +134,7 @@ describe("getCredential", () => {
       reqBody.domain,
       reqBody.serverHost,
       reqBody.serverPort,
+      "",
     );
 
     expect(result.credentialType).toBe("OAuthToken");
@@ -162,6 +164,7 @@ describe("getCredential", () => {
       reqBody.domain,
       reqBody.serverHost,
       reqBody.serverPort,
+      "",
     );
 
     expect(result.credentialType).toBe("GoogleWorkloadIdentityFederation");
@@ -193,6 +196,7 @@ describe("getCredential", () => {
       reqBody.domain,
       reqBody.serverHost,
       reqBody.serverPort,
+      "",
     );
 
     expect(result.credentialType).toBe("AwsStsFederation");
@@ -219,6 +223,7 @@ describe("getCredential", () => {
         reqBody.domain,
         reqBody.serverHost,
         reqBody.serverPort,
+        "",
       ),
     ).rejects.toThrowError(/Failed to fetch credential/);
   });
@@ -241,6 +246,7 @@ describe("getCredential", () => {
         reqBody.domain,
         reqBody.serverHost,
         reqBody.serverPort,
+        "",
       ),
     ).rejects.toThrowError(/Failed to fetch credential/);
   });
@@ -267,6 +273,7 @@ describe("getCredential", () => {
         reqBody.domain,
         reqBody.serverHost,
         reqBody.serverPort,
+        "",
       ),
     ).rejects.toThrowError(/Invalid or currently unsupported credential type/);
   });
@@ -292,6 +299,7 @@ describe("getCredential", () => {
         reqBody.domain,
         reqBody.serverHost,
         reqBody.serverPort,
+        "",
       ),
     ).rejects.toThrowError(/Invalid or currently unsupported credential type/);
   });
@@ -317,6 +325,7 @@ describe("getCredential", () => {
         reqBody.domain,
         reqBody.serverHost,
         reqBody.serverPort,
+        "",
       ),
     ).rejects.toThrowError(
       /No credential values were included in the server response/,
@@ -357,6 +366,7 @@ describe("getCredential", () => {
       reqBody.domain,
       reqBody.serverHost,
       reqBody.serverPort,
+      "",
     );
 
     expect(capturedBody).toEqual({
@@ -407,6 +417,7 @@ describe("getCredential", () => {
       reqBody.domain,
       reqBody.serverHost,
       reqBody.serverPort,
+      "",
     );
 
     expect((capturedHeaders as unknown as Headers).get("Authorization")).toBe(
@@ -452,6 +463,7 @@ describe("getCredential", () => {
         reqBody.domain,
         reqBody.serverHost,
         reqBody.serverPort,
+        "",
       );
 
       expect(result.data.apiKey).toBe("retried-api-key");
@@ -485,6 +497,7 @@ describe("getCredential", () => {
           reqBody.domain,
           reqBody.serverHost,
           reqBody.serverPort,
+          "",
         ),
       ).rejects.toThrowError(
         /Failed to parse the credential response after 3 attempts/,
@@ -508,6 +521,7 @@ describe("getCredential", () => {
         reqBody.domain,
         reqBody.serverHost,
         reqBody.serverPort,
+        "",
       ),
     ).rejects.toThrow(TypeError);
   });
@@ -546,11 +560,57 @@ describe("getCredential", () => {
       reqBody.domain,
       reqBody.serverHost,
       reqBody.serverPort,
+      "",
     );
 
     expect((capturedHeaders as unknown as Headers).get("Content-Type")).toBe(
       "application/json",
     );
+  });
+
+  it("sends X-Aembit-ResourceSet header when resourceSetId is provided", async ({
+    expect,
+  }) => {
+    vi.mocked(core.info).mockImplementation(() => {});
+
+    let capturedHeaders: Headers | null = null;
+    const customResourceSetId = uuidv4();
+
+    server.use(
+      edgeApiGetCredentialsHandler(async (info) => {
+        capturedHeaders = info.request.headers;
+        return new Response(
+          JSON.stringify({
+            credentialType: "ApiKey",
+            expiresAt: "2024-12-31T23:59:59Z",
+            data: {
+              apiKey: "test-api-key-67890",
+            },
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+      }),
+    );
+
+    await getCredential(
+      "ApiKey",
+      reqBody.clientId,
+      reqBody.identityToken,
+      reqBody.accessToken,
+      reqBody.domain,
+      reqBody.serverHost,
+      reqBody.serverPort,
+      customResourceSetId,
+    );
+
+    expect(
+      (capturedHeaders as unknown as Headers).get("X-Aembit-ResourceSet"),
+    ).toBe(customResourceSetId);
   });
 });
 

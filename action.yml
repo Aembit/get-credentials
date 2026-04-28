@@ -16,6 +16,9 @@ inputs:
   domain:
     description: "Root domain for Aembit"
     default: "useast2.aembit.io"
+  resource-set-id:
+    description: "Aembit Resource Set ID"
+    required: false
   server-host:
     description: "Server workload hostname"
   server-port:

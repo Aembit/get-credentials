@@ -11,12 +11,15 @@ async function getAccessToken(
   clientId: string,
   identityToken: string,
   domain: string,
+  resourceSetId?: string,
 ): Promise<string> {
   const tenantId: string = clientId.split(":")[2];
   const url: string = `https://${tenantId}.ec.${domain}`;
 
   core.info(`Fetching access token from ${url}/edge/v1/auth`);
-  core.debug(`Access token request: clientId=${clientId}`);
+  core.debug(
+    `Access token request: clientId=${clientId}, resourceSetId=${resourceSetId}`,
+  );
 
   let lastError: unknown;
 
@@ -39,7 +42,7 @@ async function getAccessToken(
             },
           },
         },
-        undefined,
+        resourceSetId ? { "X-Aembit-ResourceSet": resourceSetId } : undefined,
         {
           baseURL: url,
           headers: {
