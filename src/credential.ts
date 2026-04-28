@@ -31,13 +31,14 @@ async function getCredential(
   domain: string,
   serverHost: string,
   serverPort: number,
+  resourceSetId?: string,
 ): Promise<ValidatedApiCredentialsResponse> {
   const tenantId: string = clientId.split(":")[2];
   const url: string = `https://${tenantId}.ec.${domain}`;
 
   core.info(`Fetching credential from ${url}/edge/v1/credentials`);
   core.debug(
-    `Credential request: credentialType=${credentialType}, serverHost=${serverHost}, serverPort=${serverPort}`,
+    `Credential request: credentialType=${credentialType}, serverHost=${serverHost}, serverPort=${serverPort}, resourceSetId=${resourceSetId}`,
   );
 
   let lastError: unknown;
@@ -63,7 +64,7 @@ async function getCredential(
         },
         credentialType: credentialType as CredentialProviderTypes,
       },
-      undefined,
+      resourceSetId ? { "X-Aembit-ResourceSet": resourceSetId } : undefined,
       {
         baseURL: url,
         headers: {

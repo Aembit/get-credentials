@@ -32,6 +32,7 @@ describe("run", () => {
         domain: "aembit.io",
         "server-host": "api.example.com",
         "server-port": "443",
+        "resource-set-id": "",
         "credential-type": "ApiKey",
       };
       return inputs[name] || "";
@@ -110,6 +111,7 @@ describe("run", () => {
       "aembit.io",
       "api.example.com",
       443,
+      "",
     );
 
     // Verify setOutputs is called
@@ -307,6 +309,7 @@ describe("run", () => {
       customDomain,
       customHost,
       Number(customPort),
+      "",
     );
   });
 
@@ -394,6 +397,7 @@ describe("run", () => {
       "aembit.io",
       "api.example.com",
       443,
+      "",
     );
     expect(credential.setOutputs).toHaveBeenCalledWith("UsernamePassword", {
       username: "test-user",
@@ -481,6 +485,36 @@ describe("run", () => {
     expect(credential.setOutputs).toHaveBeenCalled();
     expect(core.setFailed).toHaveBeenCalledWith(
       "API key was missing in response from server.",
+    );
+  });
+
+  it("passes resource-set-id to getCredential when provided", async ({
+    expect,
+  }) => {
+    const customResourceSetId = uuidv4();
+    vi.mocked(core.getInput).mockImplementation((name: string) => {
+      const inputs: Record<string, string> = {
+        "client-id": validClientId,
+        domain: "aembit.io",
+        "server-host": "api.example.com",
+        "server-port": "443",
+        "resource-set-id": customResourceSetId,
+        "credential-type": "ApiKey",
+      };
+      return inputs[name] || "";
+    });
+
+    await run();
+
+    expect(credential.getCredential).toHaveBeenCalledWith(
+      "ApiKey",
+      validClientId,
+      mockIdentityToken,
+      mockAccessToken,
+      "aembit.io",
+      "api.example.com",
+      443,
+      customResourceSetId,
     );
   });
 });
