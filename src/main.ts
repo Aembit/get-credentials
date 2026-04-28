@@ -45,6 +45,7 @@ async function run(): Promise<void> {
       clientId,
       identityToken,
       domain,
+      resourceSetId,
     );
     core.info("Access token obtained ✅");
 

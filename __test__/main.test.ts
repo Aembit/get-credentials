@@ -102,6 +102,7 @@ describe("run", () => {
       validClientId,
       mockIdentityToken,
       "aembit.io",
+      "",
     );
     expect(credential.getCredential).toHaveBeenCalledWith(
       "ApiKey",
@@ -300,6 +301,7 @@ describe("run", () => {
       customClientId,
       mockIdentityToken,
       customDomain,
+      "",
     );
     expect(credential.getCredential).toHaveBeenCalledWith(
       "ApiKey",
@@ -488,7 +490,7 @@ describe("run", () => {
     );
   });
 
-  it("passes resource-set-id to getCredential when provided", async ({
+  it("passes resource-set-id to getAccessToken and getCredential when provided", async ({
     expect,
   }) => {
     const customResourceSetId = uuidv4();
@@ -506,6 +508,12 @@ describe("run", () => {
 
     await run();
 
+    expect(accessToken.getAccessToken).toHaveBeenCalledWith(
+      validClientId,
+      mockIdentityToken,
+      "aembit.io",
+      customResourceSetId,
+    );
     expect(credential.getCredential).toHaveBeenCalledWith(
       "ApiKey",
       validClientId,
