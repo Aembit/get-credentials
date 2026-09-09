@@ -130,7 +130,7 @@ outputs:
 
 #### Using AWS STS Federation with Multiple Credential Providers
 
-When an Access Policy in Aembit defines multiple AWS STS Credential Providers, use `aws-access-key-id` to specify which provider credentials to fetch:
+When an Access Policy in Aembit defines multiple AWS STS Federation Credential Providers, use `aws-access-key-id` to specify which provider credentials to fetch:
 
 ```yaml
 steps:
