@@ -10,12 +10,13 @@ export const credentialProviderTypesEnum = {
     "UsernamePassword": "UsernamePassword",
     "GoogleWorkloadIdentityFederation": "GoogleWorkloadIdentityFederation",
     "OAuthToken": "OAuthToken",
-    "AwsStsFederation": "AwsStsFederation"
+    "AwsStsFederation": "AwsStsFederation",
+    "X509Svid": "X509Svid"
 } as const;
 
 export type CredentialProviderTypesEnumKey = (typeof credentialProviderTypesEnum)[keyof typeof credentialProviderTypesEnum];
 
 /**
- * @description Type of credential being requested from your configured Credential Provider
+ * @description Type of credential being requested from your configured Credential Provider.\r\nNote: Use \'OAuthToken\' for Azure Entra ID, Microsoft, and generic OAuth2 providers.
 */
 export type CredentialProviderTypes = CredentialProviderTypesEnumKey;

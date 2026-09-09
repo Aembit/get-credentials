@@ -9,6 +9,7 @@ import type { TokenDTO } from "./TokenDTO";
 
 export type EdgeApiAuthHeaderParams = {
     /**
+     * @description The Resource Set ID corresponding to the Trust Provider you want to authenticate with. If not specified, the default Resource Set will be used.
      * @type string | undefined, uuid
     */
     "X-Aembit-ResourceSet"?: string;
@@ -30,6 +31,11 @@ export type EdgeApiAuth400 = GenericResponseDTO;
 export type EdgeApiAuth401 = GenericResponseDTO;
 
 /**
+ * @description Too many authentication requests
+*/
+export type EdgeApiAuth429 = GenericResponseDTO;
+
+/**
  * @description Internal server error
 */
 export type EdgeApiAuth500 = GenericResponseDTO;
@@ -42,5 +48,5 @@ export type EdgeApiAuthMutation = {
     Response: EdgeApiAuth200;
     Request: EdgeApiAuthMutationRequest;
     HeaderParams: EdgeApiAuthHeaderParams;
-    Errors: EdgeApiAuth400 | EdgeApiAuth401 | EdgeApiAuth500;
+    Errors: EdgeApiAuth400 | EdgeApiAuth401 | EdgeApiAuth429 | EdgeApiAuth500;
 };

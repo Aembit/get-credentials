@@ -6,20 +6,21 @@
 import type { TransportProtocol } from "./TransportProtocol";
 
 /**
- * @description Target server connection details for credential requests
+ * @description Target resource details for which the credential is being requested. These fields are used to match the request against your configured Access Policies.
 */
 export type ServerWorkloadDetails = {
     /**
+     * @description The protocol used to connect to the target resource. Default is TCP.
      * @type string | undefined
     */
     transportProtocol?: TransportProtocol;
     /**
-     * @description Target server hostname or IP address
-     * @type string
+     * @description The hostname, IP address, or FQDN of the target resource
+     * @type null,string | undefined
     */
     host?: string | null;
     /**
-     * @description Target server port number
+     * @description The port number of the target resource.
      * @type integer | undefined, int32
     */
     port?: number;

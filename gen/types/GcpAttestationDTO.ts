@@ -10,12 +10,12 @@
 export type GcpAttestationDTO = {
     /**
      * @description Identity token for workload attestation
-     * @type string
+     * @type null,string | undefined
     */
     identityToken?: string | null;
     /**
      * @description Base64-encoded GCP instance identity document
-     * @type string
+     * @type null,string | undefined
     */
     instanceDocument?: string | null;
 };

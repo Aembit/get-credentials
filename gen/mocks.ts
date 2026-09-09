@@ -11,6 +11,7 @@ import type { AwsEcsDTO } from "./types/AwsEcsDTO";
 import type { AzureAttestationDTO } from "./types/AzureAttestationDTO";
 import type { AzureAttestedDocumentDTO } from "./types/AzureAttestedDocumentDTO";
 import type { ClientWorkloadDetails } from "./types/ClientWorkloadDetails";
+import type { ConnectionMetadata } from "./types/ConnectionMetadata";
 import type { CredentialProviderTypes } from "./types/CredentialProviderTypes";
 import type { CrowdStrikeDTO } from "./types/CrowdStrikeDTO";
 import type { EdgeApiAuthHeaderParams, EdgeApiAuthMutationResponse } from "./types/EdgeApiAuth";
@@ -78,7 +79,7 @@ export function createAwsDTO(data?: Partial<AwsDTO>): AwsDTO {
 }
 
 /**
- * @description Azure attested document with signature and nonce for verification
+ * @description Azure Instance Metadata Service (IMDS) Attested Data document.
  */
 export function createAzureAttestedDocumentDTO(data?: Partial<AzureAttestedDocumentDTO>): AzureAttestedDocumentDTO {
   
@@ -149,7 +150,7 @@ export function createK8sDTO(data?: Partial<K8sDTO>): K8sDTO {
 export function createProcessDTO(data?: Partial<ProcessDTO>): ProcessDTO {
   
   return {
-  ...{"name": faker.string.alpha(),"pid": faker.number.int(),"userId": faker.number.int(),"userName": faker.string.alpha(),"exePath": faker.string.alpha()},
+  ...{"name": faker.string.alpha(),"pid": faker.number.int(),"userId": faker.number.int(),"userName": faker.string.alpha(),"exePath": faker.string.alpha(),"commandLine": faker.string.alpha(),"exeHash": faker.string.alpha()},
   ...data || {}
   }
 }
@@ -223,7 +224,7 @@ export function createTransportProtocol() {
 }
 
 /**
- * @description Target server connection details for credential requests
+ * @description Target resource details for which the credential is being requested. These fields are used to match the request against your configured Access Policies.
  */
 export function createServerWorkloadDetails(data?: Partial<ServerWorkloadDetails>): ServerWorkloadDetails {
   
@@ -234,11 +235,22 @@ export function createServerWorkloadDetails(data?: Partial<ServerWorkloadDetails
 }
 
 /**
- * @description Type of credential being requested from your configured Credential Provider
+ * @description Type of credential being requested from your configured Credential Provider.\r\nNote: Use \'OAuthToken\' for Azure Entra ID, Microsoft, and generic OAuth2 providers.
  */
 export function createCredentialProviderTypes() {
   
-  return faker.helpers.arrayElement<CredentialProviderTypes>(["Unknown", "ApiKey", "UsernamePassword", "GoogleWorkloadIdentityFederation", "OAuthToken", "AwsStsFederation"])
+  return faker.helpers.arrayElement<CredentialProviderTypes>(["Unknown", "ApiKey", "UsernamePassword", "GoogleWorkloadIdentityFederation", "OAuthToken", "AwsStsFederation", "X509Svid"])
+}
+
+/**
+ * @description Filter for multi-credential provider access policy credential request
+ */
+export function createConnectionMetadata(data?: Partial<ConnectionMetadata>): ConnectionMetadata {
+  
+  return {
+  ...{"accountName": faker.string.alpha(),"accessKeyId": faker.string.alpha(),"headerName": faker.string.alpha(),"headerValue": faker.string.alpha(),"httpBodyFieldPath": faker.string.alpha(),"httpBodyFieldValue": faker.string.alpha()},
+  ...data || {}
+  }
 }
 
 /**
@@ -247,13 +259,13 @@ export function createCredentialProviderTypes() {
 export function createApiCredentialsRequest(data?: Partial<ApiCredentialsRequest>): ApiCredentialsRequest {
   
   return {
-  ...{"client": createClientWorkloadDetails(),"server": createServerWorkloadDetails(),"credentialType": createCredentialProviderTypes()},
+  ...{"client": createClientWorkloadDetails(),"server": createServerWorkloadDetails(),"credentialType": createCredentialProviderTypes(),"connectionMetadata": createConnectionMetadata(),"certSigningRequest": faker.string.alpha()},
   ...data || {}
   }
 }
 
 /**
- * @description Credential data returned to Client Workloads based on your configured Credential Providers
+ * @description     Credential data returned to Client Workloads based on your configured Credential Providers\n    For AWS (AwsStsFederation), look in the aws* fields.\n    For API Key and Username/Password, look in their respective fields.\n    For all other types (GCP, OAuth, OIDC, Aembit), the result is in the \'token\' field.
  */
 export function createEdgeCredentials(data?: Partial<EdgeCredentials>): EdgeCredentials {
   
@@ -275,12 +287,12 @@ export function createApiCredentialsResponse(data?: Partial<ApiCredentialsRespon
 }
 
 /**
- * @description Identity and attestation information for Client Workload authentication
+ * @description Identity and attestation information for Client Workload authentication. \nThis request initiates a session with the Aembit Edge API by providing proof of \nworkload identity via a configured Trust Provider.
  */
 export function createAuthRequest(data?: Partial<AuthRequest>): AuthRequest {
   
   return {
-  ...{"clientId": faker.string.alpha(),"client": createClientWorkloadDetails()},
+  ...{"clientId": faker.string.alpha({ length: 1 }),"client": createClientWorkloadDetails()},
   ...data || {}
   }
 }
@@ -302,7 +314,7 @@ export function createGenericResponseDTO(data?: Partial<GenericResponseDTO>): Ge
 export function createTokenDTO(data?: Partial<TokenDTO>): TokenDTO {
   
   return {
-  ...{"accessToken": faker.string.alpha(),"tokenType": faker.string.alpha(),"expiresIn": faker.number.int()},
+  ...{"accessToken": faker.string.alpha({ length: 1 }),"refreshToken": faker.string.alpha(),"tokenType": faker.string.alpha({ length: 1 }),"expiresIn": faker.number.int()},
   ...data || {}
   }
 }
@@ -335,6 +347,14 @@ export function createEdgeApiAuth400() {
  * @description Unauthorized
  */
 export function createEdgeApiAuth401() {
+  
+  return createGenericResponseDTO()
+}
+
+/**
+ * @description Too many authentication requests
+ */
+export function createEdgeApiAuth429() {
   
   return createGenericResponseDTO()
 }
@@ -378,7 +398,39 @@ export function createEdgeApiGetCredentials200() {
  */
 export function createEdgeApiGetCredentials400() {
   
-  return undefined
+  return createGenericResponseDTO()
+}
+
+/**
+ * @description Unauthorized access
+ */
+export function createEdgeApiGetCredentials401() {
+  
+  return createGenericResponseDTO()
+}
+
+/**
+ * @description Not applicable for this request
+ */
+export function createEdgeApiGetCredentials403() {
+  
+  return createGenericResponseDTO()
+}
+
+/**
+ * @description No client/server workload or access policy was found. Response will be of type ApiCredentialsResponse with credential type set to Unknown
+ */
+export function createEdgeApiGetCredentials404() {
+  
+  return createApiCredentialsResponse()
+}
+
+/**
+ * @description Too many credential requests
+ */
+export function createEdgeApiGetCredentials429() {
+  
+  return createGenericResponseDTO()
 }
 
 /**

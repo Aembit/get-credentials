@@ -10,14 +10,14 @@
 export type StsGetCallerIdentityDTO = {
     /**
      * @description HTTP headers for AWS STS GetCallerIdentity request
-     * @type object
+     * @type null,object | undefined
     */
     headers?: {
         [key: string]: string | null;
     } | null;
     /**
      * @description AWS region for STS GetCallerIdentity request
-     * @type string
+     * @type null,string | undefined
     */
     region?: string | null;
 };

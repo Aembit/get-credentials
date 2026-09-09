@@ -10,7 +10,7 @@
 export type K8sDTO = {
     /**
      * @description Kubernetes service account JWT token
-     * @type string
+     * @type null,string | undefined
     */
     serviceAccountToken?: string | null;
 };

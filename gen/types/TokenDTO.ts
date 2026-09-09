@@ -10,17 +10,24 @@
 export type TokenDTO = {
     /**
      * @description Bearer token for authenticating subsequent API requests
+     * @minLength 1
      * @type string
     */
-    accessToken?: string | null;
+    accessToken: string;
+    /**
+     * @description Refresh token to obtain new access tokens for future API authentication requests
+     * @type null,string | undefined
+    */
+    refreshToken?: string | null;
     /**
      * @description Token type, typically \'Bearer\' for OAuth2-style tokens
+     * @minLength 1
      * @type string
     */
-    tokenType?: string | null;
+    tokenType: string;
     /**
      * @description Token expiration time in seconds from issuance
-     * @type integer | undefined, int32
+     * @type integer, int32
     */
-    expiresIn?: number;
+    expiresIn: number;
 };

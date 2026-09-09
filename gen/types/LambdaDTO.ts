@@ -10,7 +10,7 @@
 export type LambdaDTO = {
     /**
      * @description AWS Lambda function ARN
-     * @type string
+     * @type null,string | undefined
     */
     arn?: string | null;
 };

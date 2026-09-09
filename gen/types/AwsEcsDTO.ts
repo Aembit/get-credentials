@@ -10,12 +10,12 @@
 export type AwsEcsDTO = {
     /**
      * @description JSON string containing AWS ECS container metadata
-     * @type string
+     * @type null,string | undefined
     */
     containerMetadata?: string | null;
     /**
      * @description JSON string containing AWS ECS task metadata
-     * @type string
+     * @type null,string | undefined
     */
     taskMetadata?: string | null;
 };

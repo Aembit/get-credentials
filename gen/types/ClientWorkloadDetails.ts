@@ -17,7 +17,7 @@ import type { OsDTO } from "./OsDTO";
 export type ClientWorkloadDetails = {
     /**
      * @description IP address of the requesting Client Workload
-     * @type string
+     * @type null,string | undefined
     */
     sourceIP?: string | null;
     /**

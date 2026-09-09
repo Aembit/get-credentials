@@ -4,6 +4,7 @@
 */
 
 import type { ClientWorkloadDetails } from "./ClientWorkloadDetails";
+import type { ConnectionMetadata } from "./ConnectionMetadata";
 import type { CredentialProviderTypes } from "./CredentialProviderTypes";
 import type { ServerWorkloadDetails } from "./ServerWorkloadDetails";
 
@@ -13,17 +14,26 @@ import type { ServerWorkloadDetails } from "./ServerWorkloadDetails";
 export type ApiCredentialsRequest = {
     /**
      * @description Identity and attestation information for a Client Workload requesting credentials
+     * @type object
+    */
+    client: ClientWorkloadDetails;
+    /**
+     * @description Target resource details for which the credential is being requested. These fields are used to match the request against your configured Access Policies.
+     * @type object
+    */
+    server: ServerWorkloadDetails;
+    /**
+     * @description Type of credential being requested from your configured Credential Provider.\r\nNote: Use \'OAuthToken\' for Azure Entra ID, Microsoft, and generic OAuth2 providers.
+     * @type string
+    */
+    credentialType: CredentialProviderTypes;
+    /**
+     * @description Filter for multi-credential provider access policy credential request
      * @type object | undefined
     */
-    client?: ClientWorkloadDetails;
+    connectionMetadata?: ConnectionMetadata;
     /**
-     * @description Target server connection details for credential requests
-     * @type object | undefined
+     * @type null,string | undefined
     */
-    server?: ServerWorkloadDetails;
-    /**
-     * @description Type of credential being requested from your configured Credential Provider
-     * @type string | undefined
-    */
-    credentialType?: CredentialProviderTypes;
+    certSigningRequest?: string | null;
 };

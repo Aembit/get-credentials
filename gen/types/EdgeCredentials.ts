@@ -5,42 +5,42 @@
 
 
 /**
- * @description Credential data returned to Client Workloads based on your configured Credential Providers
+ * @description     Credential data returned to Client Workloads based on your configured Credential Providers\n    For AWS (AwsStsFederation), look in the aws* fields.\n    For API Key and Username/Password, look in their respective fields.\n    For all other types (GCP, OAuth, OIDC, Aembit), the result is in the \'token\' field.
 */
 export type EdgeCredentials = {
     /**
      * @description API key credential for authenticating to target services
-     * @type string
+     * @type null,string | undefined
     */
     apiKey?: string | null;
     /**
-     * @description Bearer token credential for authenticating to target services
-     * @type string
+     * @description Bearer token credential for authenticating to target services/\nThis field contains the result for: \nGoogleWorkloadIdentityFederation (GCP WIF Token), GitLab, GitHub,\nand generic JWT/OIDC credentials.
+     * @type null,string | undefined
     */
     token?: string | null;
     /**
      * @description Username for basic authentication credentials
-     * @type string
+     * @type null,string | undefined
     */
     username?: string | null;
     /**
      * @description Password for basic authentication credentials
-     * @type string
+     * @type null,string | undefined
     */
     password?: string | null;
     /**
      * @description AWS access key ID for programmatic access
-     * @type string
+     * @type null,string | undefined
     */
     awsAccessKeyId?: string | null;
     /**
      * @description AWS secret access key for programmatic access
-     * @type string
+     * @type null,string | undefined
     */
     awsSecretAccessKey?: string | null;
     /**
      * @description AWS session token for temporary credentials
-     * @type string
+     * @type null,string | undefined
     */
     awsSessionToken?: string | null;
 };

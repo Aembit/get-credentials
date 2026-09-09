@@ -13,12 +13,12 @@ import type { SensorsDTO } from "./SensorsDTO";
 export type HostDTO = {
     /**
      * @description Client Workload hostname
-     * @type string
+     * @type null,string | undefined
     */
     hostname?: string | null;
     /**
      * @description Domain name of the Client Workload host
-     * @type string
+     * @type null,string | undefined
     */
     domainName?: string | null;
     /**
@@ -33,11 +33,11 @@ export type HostDTO = {
     sensors?: SensorsDTO;
     /**
      * @description Hardware serial number of the Client Workload system
-     * @type string
+     * @type null,string | undefined
     */
     systemSerialNumber?: string | null;
     /**
-     * @type array
+     * @type null,array | undefined
     */
     networkInterfaces?: NetworkInterfacesDTO[] | null;
 };

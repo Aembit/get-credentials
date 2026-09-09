@@ -1,9 +1,9 @@
-openapi: 3.0.4
+openapi: '3.1.1'
 info:
   title: Aembit Edge API
   version: v1
 servers:
-  - url: https://{tenant}.aembit.io
+  - url: 'https://{tenant}.aembit.io'
     variables:
       tenant:
         default: tenant
@@ -14,11 +14,12 @@ paths:
       tags:
         - Auth
       summary: Authenticate to the Edge API
-      description: Authenticates Client Workloads to Aembit Edge using a Trust Provider
+      description: "Bootstraps a session with the Aembit Edge API. This endpoint authenticates a Client Workload by \nverifying its identity against a specific Aembit Trust Provider. The Trust Provider must be configured in the \nAembit Console to match the environment where the workload is running. Supported Trust Provider types include\nAWS Metadata Service, AWS Role, GCP Identity Token, GitHub Action ID Token, GitLab Job ID Token, Kubernetes Service Account,\nOIDC ID Token, and Terraform Cloud Identity Token."
       operationId: edge-api-auth
       parameters:
         - name: X-Aembit-ResourceSet
           in: header
+          description: 'The Resource Set ID corresponding to the Trust Provider you want to authenticate with. If not specified, the default Resource Set will be used.'
           schema:
             type: string
             format: uuid
@@ -26,43 +27,86 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AuthRequest"
+              description: "Identity and attestation information for Client Workload authentication. \nThis request initiates a session with the Aembit Edge API by providing proof of \nworkload identity via a configured Trust Provider."
+              title: AuthRequest
+              $ref: '#/components/schemas/AuthRequest'
       responses:
-        "200":
+        '200':
           description: Successfully retrieved access token
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TokenDTO"
-        "400":
+                description: OAuth2-style access token response with expiration details
+                $ref: '#/components/schemas/TokenDTO'
+        '400':
           description: Invalid request or missing parameters
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GenericResponseDTO"
-        "401":
+                description: DTO for a Generic API Response
+                $ref: '#/components/schemas/GenericResponseDTO'
+              examples:
+                '400':
+                  summary: 400 response example
+                  value:
+                    success: false
+                    message: Invalid client ID.
+                    id: 0
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GenericResponseDTO"
-        "500":
+                description: DTO for a Generic API Response
+                $ref: '#/components/schemas/GenericResponseDTO'
+              examples:
+                '401':
+                  summary: 401 response example
+                  value:
+                    success: false
+                    message: Unauthorized.
+                    id: 0
+        '429':
+          description: Too many authentication requests
+          content:
+            application/json:
+              schema:
+                description: DTO for a Generic API Response
+                $ref: '#/components/schemas/GenericResponseDTO'
+              examples:
+                '429':
+                  summary: 429 response example
+                  value:
+                    success: false
+                    message: Too many requests. Please try again later.
+                    id: 0
+        '500':
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GenericResponseDTO"
+                description: DTO for a Generic API Response
+                $ref: '#/components/schemas/GenericResponseDTO'
+              examples:
+                '500':
+                  summary: 500 response example
+                  value:
+                    success: false
+                    message: Authentication failed due to an internal error.
+                    id: 0
+      security:
+        - { }
   /edge/v1/credentials:
     post:
       tags:
         - Credentials
       summary: Get credentials for a Client Workload
-      description: Retrieves credentials for a Client Workload based on your
-        configured Access Policies
+      description: Retrieves credentials for a Client Workload based on configured Access Policies
       operationId: edge-api-get-credentials
       parameters:
         - name: X-Aembit-ResourceSet
           in: header
+          description: 'The Resource Set ID of the Access Policy to be used for this credential request. If not specified, the default Resource Set will be used.'
           schema:
             type: string
             format: uuid
@@ -70,34 +114,121 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ApiCredentialsRequest"
+              description: Request payload for retrieving credentials for a Client Workload
+              title: CredentialsRequest
+              $ref: '#/components/schemas/ApiCredentialsRequest'
       responses:
-        "200":
+        '200':
           description: Credentials returned for specified Client Workload
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ApiCredentialsResponse"
-        "400":
+                description: Response containing credentials that a Client Workload requests with expiration details
+                $ref: '#/components/schemas/ApiCredentialsResponse'
+        '400':
           description: Invalid request or missing parameters
-        "500":
+          content:
+            application/json:
+              schema:
+                description: DTO for a Generic API Response
+                $ref: '#/components/schemas/GenericResponseDTO'
+              examples:
+                '400':
+                  summary: 400 response example
+                  value:
+                    success: false
+                    message: The credentials request is invalid.
+                    id: 0
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                description: DTO for a Generic API Response
+                $ref: '#/components/schemas/GenericResponseDTO'
+              examples:
+                '401':
+                  summary: 401 response example
+                  value:
+                    success: false
+                    message: Unauthorized access.
+                    id: 0
+        '403':
+          description: Not applicable for this request
+          content:
+            application/json:
+              schema:
+                description: DTO for a Generic API Response
+                $ref: '#/components/schemas/GenericResponseDTO'
+              examples:
+                '403':
+                  summary: 403 response example
+                  value:
+                    success: false
+                    message: Not applicable for this request.
+                    id: 0
+        '404':
+          description: No client/server workload or access policy was found. Response will be of type ApiCredentialsResponse with credential type set to Unknown
+          content:
+            application/json:
+              schema:
+                description: Response containing credentials that a Client Workload requests with expiration details
+                $ref: '#/components/schemas/ApiCredentialsResponse'
+        '429':
+          description: Too many credential requests
+          content:
+            application/json:
+              schema:
+                description: DTO for a Generic API Response
+                $ref: '#/components/schemas/GenericResponseDTO'
+              examples:
+                '429':
+                  summary: 429 response example
+                  value:
+                    success: false
+                    message: Too many requests. Please try again later.
+                    id: 0
+        '500':
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GenericResponseDTO"
+                description: DTO for a Generic API Response
+                $ref: '#/components/schemas/GenericResponseDTO'
+              examples:
+                '500':
+                  summary: 500 response example
+                  value:
+                    success: false
+                    message: Failed to retrieve credentials due to an internal error.
+                    id: 0
 components:
   schemas:
     ApiCredentialsRequest:
       title: CredentialsRequest
+      required:
+        - client
+        - credentialType
+        - server
       type: object
       properties:
         client:
-          $ref: "#/components/schemas/ClientWorkloadDetails"
+          description: "Identity and attestation details for the client workload requesting credentials.\nPopulate this object with the same workload identity context used for /edge/v1/auth,\nincluding any platform-specific attestation fields required for that workload type (for\nexample, Kubernetes service account token, OIDC identity token, or cloud instance attestation data).\nThese fields are evaluated as part of access policy matching for the credentials request."
+          $ref: '#/components/schemas/ClientWorkloadDetails'
         server:
-          $ref: "#/components/schemas/ServerWorkloadDetails"
+          description: Target resource details for which the credential is being requested.
+          $ref: '#/components/schemas/ServerWorkloadDetails'
         credentialType:
-          $ref: "#/components/schemas/CredentialProviderTypes"
+          description: Type of credential being requested from your configured Credential Provider
+          title: CredentialProviderTypes
+          $ref: '#/components/schemas/CredentialProviderTypes'
+        connectionMetadata:
+          description: Filter values to be used if your access policy is configured with multiple credential providers
+          $ref: '#/components/schemas/ConnectionMetadata'
+        certSigningRequest:
+          type:
+            - 'null'
+            - string
       additionalProperties: false
       description: Request payload for retrieving credentials for a Client Workload
     ApiCredentialsResponse:
@@ -105,118 +236,179 @@ components:
       type: object
       properties:
         credentialType:
-          $ref: "#/components/schemas/CredentialProviderTypes"
+          description: Type of credential returned by your configured Credential Provider
+          $ref: '#/components/schemas/CredentialProviderTypes'
         expiresAt:
-          type: string
-          description: Token expiration time in ISO 8601 format, null for non-expiring
-            credentials
+          type:
+            - 'null'
+            - string
+          description: 'Token expiration time in ISO 8601 format, null for non-expiring credentials'
           format: date-time
-          nullable: true
         data:
-          $ref: "#/components/schemas/EdgeCredentials"
+          description: Credential data returned by your configured Credential Provider
+          $ref: '#/components/schemas/EdgeCredentials'
       additionalProperties: false
-      description: Response containing credentials that a Client Workload requests
-        with expiration details
+      description: Response containing credentials that a Client Workload requests with expiration details
     AuthRequest:
       title: AuthRequest
+      required:
+        - client
+        - clientId
       type: object
       properties:
         clientId:
+          minLength: 1
           type: string
-          description: Trust Provider Client Id for authentication
-          nullable: true
+          description: "The Aembit ARN of the Trust Provider configured to attest this workload.\nFormat: 'aembit:{stack}:{tenant}:identity:{type}:{uuid}'\nWhere to find it:\nIn the Aembit Admin UI, navigate to 'Trust Providers', select your provider, \nand copy the value from the 'ID' field."
         client:
-          $ref: "#/components/schemas/ClientWorkloadDetails"
+          description: Client Workload identifiers for authentication
+          $ref: '#/components/schemas/ClientWorkloadDetails'
       additionalProperties: false
-      description: Identity and attestation information for Client Workload authentication
+      description: "Identity and attestation information for Client Workload authentication. \nThis request initiates a session with the Aembit Edge API by providing proof of \nworkload identity via a configured Trust Provider."
     AwsDTO:
       type: object
       properties:
         instanceIdentityDocument:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Base64-encoded AWS instance identity document
-          nullable: true
         instanceIdentityDocumentSignature:
-          type: string
-          description: Base64-encoded signature for AWS instance identity document
-            verification
-          nullable: true
+          type:
+            - 'null'
+            - string
+          description: Base64-encoded signature for AWS instance identity document verification
         lambda:
-          $ref: "#/components/schemas/LambdaDTO"
+          description: AWS Lambda function information for serverless workload attestation
+          $ref: '#/components/schemas/LambdaDTO'
         ecs:
-          $ref: "#/components/schemas/AwsEcsDTO"
+          description: AWS ECS container and task metadata for workload attestation
+          $ref: '#/components/schemas/AwsEcsDTO'
         stsGetCallerIdentity:
-          $ref: "#/components/schemas/StsGetCallerIdentityDTO"
+          description: AWS STS GetCallerIdentity request data for identity verification
+          $ref: '#/components/schemas/StsGetCallerIdentityDTO'
       additionalProperties: false
       description: AWS-specific attestation data for Client Workload identification
     AwsEcsDTO:
       type: object
       properties:
         containerMetadata:
-          type: string
+          type:
+            - 'null'
+            - string
           description: JSON string containing AWS ECS container metadata
-          nullable: true
         taskMetadata:
-          type: string
+          type:
+            - 'null'
+            - string
           description: JSON string containing AWS ECS task metadata
-          nullable: true
       additionalProperties: false
       description: AWS ECS container and task metadata for workload attestation
     AzureAttestationDTO:
       type: object
       properties:
         attestedDocument:
-          $ref: "#/components/schemas/AzureAttestedDocumentDTO"
+          description: Azure Instance Metadata Service (IMDS) Attested Data document.
+          $ref: '#/components/schemas/AzureAttestedDocumentDTO'
       additionalProperties: false
       description: Azure-specific attestation data for Client Workload identification
     AzureAttestedDocumentDTO:
       type: object
       properties:
         encoding:
-          type: string
-          description: Encoding format of the Azure attestation document
-          nullable: true
+          type:
+            - 'null'
+            - string
+          description: The encoding of the IMDS document.
         signature:
-          type: string
-          description: Digital signature for Azure attestation document verification
-          nullable: true
+          type:
+            - 'null'
+            - string
+          description: The Base64-encoded signature (PKCS7 container) returned by the Azure IMDS 'document' field.
         nonce:
-          type: string
-          description: Cryptographic nonce for Azure attestation document freshness
-          nullable: true
+          type:
+            - 'null'
+            - string
+          description: The cryptographic nonce passed to the IMDS endpoint.
       additionalProperties: false
-      description: Azure attested document with signature and nonce for verification
+      description: Azure Instance Metadata Service (IMDS) Attested Data document.
     ClientWorkloadDetails:
       type: object
       properties:
         sourceIP:
-          type: string
+          type:
+            - 'null'
+            - string
           description: IP address of the requesting Client Workload
-          nullable: true
         aws:
-          $ref: "#/components/schemas/AwsDTO"
+          description: AWS-specific attestation data for Client Workload identification
+          $ref: '#/components/schemas/AwsDTO'
         azure:
-          $ref: "#/components/schemas/AzureAttestationDTO"
+          description: Azure-specific attestation data for Client Workload identification
+          $ref: '#/components/schemas/AzureAttestationDTO'
         gcp:
-          $ref: "#/components/schemas/GcpAttestationDTO"
+          description: GCP-specific attestation data for Client Workload identification
+          $ref: '#/components/schemas/GcpAttestationDTO'
         os:
-          $ref: "#/components/schemas/OsDTO"
+          description: Operating system environment information for Client Workload attestation
+          $ref: '#/components/schemas/OsDTO'
         k8s:
-          $ref: "#/components/schemas/K8sDTO"
+          description: Kubernetes-specific attestation data for Kubernetes pod identification
+          $ref: '#/components/schemas/K8sDTO'
         host:
-          $ref: "#/components/schemas/HostDTO"
+          description: Host system information for Client Workload attestation
+          $ref: '#/components/schemas/HostDTO'
         github:
-          $ref: "#/components/schemas/IdentityTokenAttestationDTO"
+          description: JWT-based identity token attestation for CI/CD platforms
+          $ref: '#/components/schemas/IdentityTokenAttestationDTO'
         terraform:
-          $ref: "#/components/schemas/IdentityTokenAttestationDTO"
+          description: JWT-based identity token attestation for CI/CD platforms
+          $ref: '#/components/schemas/IdentityTokenAttestationDTO'
         gitlab:
-          $ref: "#/components/schemas/IdentityTokenAttestationDTO"
+          description: JWT-based identity token attestation for CI/CD platforms
+          $ref: '#/components/schemas/IdentityTokenAttestationDTO'
         oidc:
-          $ref: "#/components/schemas/IdentityTokenAttestationDTO"
+          description: JWT-based identity token attestation for CI/CD platforms
+          $ref: '#/components/schemas/IdentityTokenAttestationDTO'
       additionalProperties: false
-      description: Identity and attestation information for a Client Workload
-        requesting credentials
+      description: Identity and attestation information for a Client Workload requesting credentials
+    ConnectionMetadata:
+      type: object
+      properties:
+        accountName:
+          type:
+            - 'null'
+            - string
+          description: The Snowflake username to filter on
+        accessKeyId:
+          type:
+            - 'null'
+            - string
+          description: The AWS access key ID to filter on
+        headerName:
+          type:
+            - 'null'
+            - string
+          description: The Header Name to filter on
+        headerValue:
+          type:
+            - 'null'
+            - string
+          description: The Header Value to filter on
+        httpBodyFieldPath:
+          type:
+            - 'null'
+            - string
+          description: The HTTP Body Field Path to filter on
+        httpBodyFieldValue:
+          type:
+            - 'null'
+            - string
+          description: The HTTP Body Field Value to filter on
+      additionalProperties: false
+      description: Filter for multi-credential provider access policy credential request
     CredentialProviderTypes:
+      title: CredentialProviderTypes
       enum:
         - Unknown
         - ApiKey
@@ -224,84 +416,97 @@ components:
         - GoogleWorkloadIdentityFederation
         - OAuthToken
         - AwsStsFederation
+        - X509Svid
       type: string
-      description: Type of credential being requested from your configured Credential
-        Provider
+      description: "Type of credential being requested from your configured Credential Provider.\r\nNote: Use 'OAuthToken' for Azure Entra ID, Microsoft, and generic OAuth2 providers."
     CrowdStrikeDTO:
       type: object
       properties:
         agentId:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Unique identifier for the CrowdStrike agent
-          nullable: true
       additionalProperties: false
       description: CrowdStrike agent information for endpoint security attestation
     EdgeCredentials:
       type: object
       properties:
         apiKey:
-          type: string
+          type:
+            - 'null'
+            - string
           description: API key credential for authenticating to target services
-          nullable: true
         token:
-          type: string
-          description: Bearer token credential for authenticating to target services
-          nullable: true
+          type:
+            - 'null'
+            - string
+          description: "Bearer token credential for authenticating to target services/\nThis field contains the result for: \nGoogleWorkloadIdentityFederation (GCP WIF Token), GitLab, GitHub,\nand generic JWT/OIDC credentials."
         username:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Username for basic authentication credentials
-          nullable: true
         password:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Password for basic authentication credentials
-          nullable: true
         awsAccessKeyId:
-          type: string
+          type:
+            - 'null'
+            - string
           description: AWS access key ID for programmatic access
-          nullable: true
         awsSecretAccessKey:
-          type: string
+          type:
+            - 'null'
+            - string
           description: AWS secret access key for programmatic access
-          nullable: true
         awsSessionToken:
-          type: string
+          type:
+            - 'null'
+            - string
           description: AWS session token for temporary credentials
-          nullable: true
       additionalProperties: false
-      description: Credential data returned to Client Workloads based on your
-        configured Credential Providers
+      description: "    Credential data returned to Client Workloads based on your configured Credential Providers\n    For AWS (AwsStsFederation), look in the aws* fields.\n    For API Key and Username/Password, look in their respective fields.\n    For all other types (GCP, OAuth, OIDC, Aembit), the result is in the 'token' field."
     EnvironmentDTO:
       type: object
       properties:
         K8S_POD_NAME:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Kubernetes pod name environment variable
-          nullable: true
         CLIENT_WORKLOAD_ID:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Aembit Client Workload identifier environment variable
-          nullable: true
         KUBERNETES_PROVIDER_ID:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Kubernetes Trust Provider identifier environment variable
-          nullable: true
         AEMBIT_RESOURCE_SET_ID:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Aembit Resource Set identifier environment variable
-          nullable: true
       additionalProperties: false
       description: Environment variables available to the Client Workload
     GcpAttestationDTO:
       type: object
       properties:
         identityToken:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Identity token for workload attestation
-          nullable: true
         instanceDocument:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Base64-encoded GCP instance identity document
-          nullable: true
       additionalProperties: false
       description: GCP-specific attestation data for Client Workload identification
     GenericResponseDTO:
@@ -309,11 +514,12 @@ components:
       properties:
         success:
           type: boolean
-          description: True if the API call was successful, False otherwise
+          description: 'True if the API call was successful, False otherwise'
         message:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Message to indicate why the API call failed
-          nullable: true
         id:
           type: integer
           description: Unique identifier of the API response
@@ -324,89 +530,108 @@ components:
       type: object
       properties:
         hostname:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Client Workload hostname
-          nullable: true
         domainName:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Domain name of the Client Workload host
-          nullable: true
         process:
-          $ref: "#/components/schemas/ProcessDTO"
+          description: Process information for Client Workload identification
+          $ref: '#/components/schemas/ProcessDTO'
         sensors:
-          $ref: "#/components/schemas/SensorsDTO"
+          description: Security sensor data for enhanced Client Workload attestation
+          $ref: '#/components/schemas/SensorsDTO'
         systemSerialNumber:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Hardware serial number of the Client Workload system
-          nullable: true
         networkInterfaces:
-          type: array
+          type:
+            - 'null'
+            - array
           items:
-            $ref: "#/components/schemas/NetworkInterfacesDTO"
-          nullable: true
+            $ref: '#/components/schemas/NetworkInterfacesDTO'
       additionalProperties: false
       description: Host system information for Client Workload attestation
     IdentityTokenAttestationDTO:
       type: object
       properties:
         identityToken:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Identity token for workload attestation
-          nullable: true
       additionalProperties: false
       description: JWT-based identity token attestation for CI/CD platforms
     K8sDTO:
       type: object
       properties:
         serviceAccountToken:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Kubernetes service account JWT token
-          nullable: true
       additionalProperties: false
       description: Kubernetes-specific attestation data for Kubernetes pod identification
     LambdaDTO:
       type: object
       properties:
         arn:
-          type: string
+          type:
+            - 'null'
+            - string
           description: AWS Lambda function ARN
-          nullable: true
       additionalProperties: false
       description: AWS Lambda function information for serverless workload attestation
     NetworkInterfacesDTO:
       type: object
       properties:
         name:
-          type: string
-          nullable: true
+          type:
+            - 'null'
+            - string
+          description: Name of the network interface
         macAddress:
-          type: string
-          nullable: true
+          type:
+            - 'null'
+            - string
+          description: MAC address of the network interface
         ipv4Addresses:
-          type: array
+          type:
+            - 'null'
+            - array
           items:
             type: string
-          nullable: true
+          description: List of IPv4 addresses
         ipv6Addresses:
-          type: array
+          type:
+            - 'null'
+            - array
           items:
             type: string
-          nullable: true
+          description: List of IPv6 addresses
       additionalProperties: false
     OsDTO:
       type: object
       properties:
         environment:
-          $ref: "#/components/schemas/EnvironmentDTO"
+          description: Environment variables available to the Client Workload
+          $ref: '#/components/schemas/EnvironmentDTO'
       additionalProperties: false
       description: Operating system environment information for Client Workload attestation
     ProcessDTO:
       type: object
       properties:
         name:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Process name
-          nullable: true
         pid:
           type: integer
           description: Process identifier (PID)
@@ -416,64 +641,91 @@ components:
           description: User identifier running the process
           format: int32
         userName:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Username running the process
-          nullable: true
         exePath:
-          type: string
+          type:
+            - 'null'
+            - string
           description: Executable file path of the process
-          nullable: true
+        commandLine:
+          type:
+            - 'null'
+            - string
+          description: Command line running the process
+        exeHash:
+          type:
+            - 'null'
+            - string
+          description: Executable hash of the process
       additionalProperties: false
       description: Process information for Client Workload identification
     SensorsDTO:
       type: object
       properties:
         crowdStrike:
-          $ref: "#/components/schemas/CrowdStrikeDTO"
+          description: CrowdStrike agent information for endpoint security attestation
+          $ref: '#/components/schemas/CrowdStrikeDTO'
       additionalProperties: false
       description: Security sensor data for enhanced Client Workload attestation
     ServerWorkloadDetails:
       type: object
       properties:
         transportProtocol:
-          $ref: "#/components/schemas/TransportProtocol"
+          description: The protocol used to connect to the target resource. Default is TCP.
+          $ref: '#/components/schemas/TransportProtocol'
         host:
-          type: string
-          description: Target server hostname or IP address
-          nullable: true
+          type:
+            - 'null'
+            - string
+          description: 'The hostname, IP address, or FQDN of the target resource'
         port:
           type: integer
-          description: Target server port number
+          description: The port number of the target resource.
           format: int32
       additionalProperties: false
-      description: Target server connection details for credential requests
+      description: Target resource details for which the credential is being requested. These fields are used to match the request against your configured Access Policies.
     StsGetCallerIdentityDTO:
       type: object
       properties:
         headers:
-          type: object
+          type:
+            - 'null'
+            - object
           additionalProperties:
-            type: string
-            nullable: true
+            type:
+              - 'null'
+              - string
           description: HTTP headers for AWS STS GetCallerIdentity request
-          nullable: true
         region:
-          type: string
+          type:
+            - 'null'
+            - string
           description: AWS region for STS GetCallerIdentity request
-          nullable: true
       additionalProperties: false
       description: AWS STS GetCallerIdentity request data for identity verification
     TokenDTO:
+      required:
+        - accessToken
+        - expiresIn
+        - tokenType
       type: object
       properties:
         accessToken:
+          minLength: 1
           type: string
           description: Bearer token for authenticating subsequent API requests
-          nullable: true
+        refreshToken:
+          type:
+            - 'null'
+            - string
+          description: Refresh token to obtain new access tokens for future API authentication requests
         tokenType:
+          minLength: 1
           type: string
-          description: Token type, typically 'Bearer' for OAuth2-style tokens
-          nullable: true
+          description: 'Token type, typically ''Bearer'' for OAuth2-style tokens'
         expiresIn:
           type: integer
           description: Token expiration time in seconds from issuance
@@ -485,12 +737,10 @@ components:
         - TCP
       type: string
   securitySchemes:
-    bearerAuth:
+    EdgeApiAuth:
       type: http
-      description: Bearer token authentication using Aembit Edge API access tokens
-        obtained via the /edge/v1/auth endpoint
+      description: Use Aembit Edge API access token obtained via the /edge/v1/auth endpoint
       scheme: bearer
-      bearerFormat: Reference
+      bearerFormat: JWT
 security:
-  - bearerAuth:
-      - read
+  - EdgeApiAuth: [ ]

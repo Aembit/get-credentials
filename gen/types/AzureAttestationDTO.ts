@@ -10,7 +10,7 @@ import type { AzureAttestedDocumentDTO } from "./AzureAttestedDocumentDTO";
 */
 export type AzureAttestationDTO = {
     /**
-     * @description Azure attested document with signature and nonce for verification
+     * @description Azure Instance Metadata Service (IMDS) Attested Data document.
      * @type object | undefined
     */
     attestedDocument?: AzureAttestedDocumentDTO;

@@ -13,12 +13,12 @@ import type { StsGetCallerIdentityDTO } from "./StsGetCallerIdentityDTO";
 export type AwsDTO = {
     /**
      * @description Base64-encoded AWS instance identity document
-     * @type string
+     * @type null,string | undefined
     */
     instanceIdentityDocument?: string | null;
     /**
      * @description Base64-encoded signature for AWS instance identity document verification
-     * @type string
+     * @type null,string | undefined
     */
     instanceIdentityDocumentSignature?: string | null;
     /**

@@ -10,7 +10,7 @@
 export type IdentityTokenAttestationDTO = {
     /**
      * @description Identity token for workload attestation
-     * @type string
+     * @type null,string | undefined
     */
     identityToken?: string | null;
 };

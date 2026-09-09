@@ -4,7 +4,7 @@
 */
 
 import fetch from "@kubb/plugin-client/clients/fetch";
-import type { EdgeApiGetCredentialsMutationRequest, EdgeApiGetCredentialsMutationResponse, EdgeApiGetCredentialsHeaderParams, EdgeApiGetCredentials400, EdgeApiGetCredentials500 } from "../types/EdgeApiGetCredentials";
+import type { EdgeApiGetCredentialsMutationRequest, EdgeApiGetCredentialsMutationResponse, EdgeApiGetCredentialsHeaderParams, EdgeApiGetCredentials400, EdgeApiGetCredentials401, EdgeApiGetCredentials403, EdgeApiGetCredentials404, EdgeApiGetCredentials429, EdgeApiGetCredentials500 } from "../types/EdgeApiGetCredentials";
 import type { RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/fetch";
 
 function getEdgeApiGetCredentialsUrl() {
@@ -13,15 +13,15 @@ function getEdgeApiGetCredentialsUrl() {
 }
 
 /**
- * @description Retrieves credentials for a Client Workload based on your configured Access Policies
+ * @description Retrieves credentials for a Client Workload based on configured Access Policies
  * @summary Get credentials for a Client Workload
  * {@link /edge/v1/credentials}
  */
-export async function edgeApiGetCredentials(data?: EdgeApiGetCredentialsMutationRequest, headers?: EdgeApiGetCredentialsHeaderParams, config: Partial<RequestConfig<EdgeApiGetCredentialsMutationRequest>> & { client?: typeof fetch } = {}) {
+export async function edgeApiGetCredentials(data: EdgeApiGetCredentialsMutationRequest, headers?: EdgeApiGetCredentialsHeaderParams, config: Partial<RequestConfig<EdgeApiGetCredentialsMutationRequest>> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  
   
   const requestData = data  
   
-  const res = await request<EdgeApiGetCredentialsMutationResponse, ResponseErrorConfig<EdgeApiGetCredentials400 | EdgeApiGetCredentials500>, EdgeApiGetCredentialsMutationRequest>({ method : "POST", url : getEdgeApiGetCredentialsUrl().url.toString(), data : requestData, ... requestConfig, headers : { ...headers, ...requestConfig.headers } })  
+  const res = await request<EdgeApiGetCredentialsMutationResponse, ResponseErrorConfig<EdgeApiGetCredentials400 | EdgeApiGetCredentials401 | EdgeApiGetCredentials403 | EdgeApiGetCredentials404 | EdgeApiGetCredentials429 | EdgeApiGetCredentials500>, EdgeApiGetCredentialsMutationRequest>({ method : "POST", url : getEdgeApiGetCredentialsUrl().url.toString(), data : requestData, ... requestConfig, headers : { ...headers, ...requestConfig.headers } })  
   return res
 }
