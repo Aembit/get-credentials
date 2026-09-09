@@ -2,10 +2,19 @@ import * as core from "@actions/core";
 import { HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { v4 as uuidv4 } from "uuid";
-import { afterAll, afterEach, beforeAll, describe, it, vi } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   edgeApiGetCredentialsHandler,
   edgeApiGetCredentialsHandlerResponse400,
+  edgeApiGetCredentialsHandlerResponse404,
   edgeApiGetCredentialsHandlerResponse500,
 } from "../gen";
 import type { ApiCredentialsResponse } from "../gen/types/ApiCredentialsResponse";
@@ -205,6 +214,166 @@ describe("getCredential", () => {
       "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
     );
     expect(result.data?.awsSessionToken).toBe("test-session-token");
+  });
+
+  it("forwards connectionMetadata with accessKeyId when awsAccessKeyId is provided", async ({
+    expect,
+  }) => {
+    vi.mocked(core.info).mockImplementation(() => {});
+
+    let capturedRequest: {
+      connectionMetadata?: { accessKeyId?: string };
+    } | null = null;
+
+    server.use(
+      edgeApiGetCredentialsHandler(async ({ request }) => {
+        capturedRequest = (await request.json()) as {
+          connectionMetadata?: { accessKeyId?: string };
+        };
+        return new Response(
+          JSON.stringify({
+            credentialType: "AwsStsFederation",
+            expiresAt: "2024-12-31T23:59:59Z",
+            data: {
+              awsAccessKeyId: "AKIAIOSFODNN7EXAMPLE",
+              awsSecretAccessKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+              awsSessionToken: "test-session-token",
+            },
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+      }),
+    );
+
+    const result = await getCredential(
+      "AwsStsFederation",
+      reqBody.clientId,
+      reqBody.identityToken,
+      reqBody.accessToken,
+      reqBody.domain,
+      reqBody.serverHost,
+      reqBody.serverPort,
+      "",
+      "AKIAIOSFODNN7EXAMPLE",
+    );
+
+    expect(capturedRequest).not.toBeNull();
+    expect(capturedRequest?.connectionMetadata).toEqual({
+      accessKeyId: "AKIAIOSFODNN7EXAMPLE",
+    });
+    expect(result.credentialType).toBe("AwsStsFederation");
+    expect(result.data?.awsAccessKeyId).toBe("AKIAIOSFODNN7EXAMPLE");
+  });
+
+  it.each([
+    { description: "not provided", awsAccessKeyId: undefined },
+    { description: "an empty string", awsAccessKeyId: "" },
+  ])("omits connectionMetadata when awsAccessKeyId is $description", async ({
+    awsAccessKeyId,
+  }) => {
+    vi.mocked(core.info).mockImplementation(() => {});
+
+    let capturedRequest: {
+      connectionMetadata?: { accessKeyId?: string };
+    } | null = null;
+
+    server.use(
+      edgeApiGetCredentialsHandler(async ({ request }) => {
+        capturedRequest = (await request.json()) as {
+          connectionMetadata?: { accessKeyId?: string };
+        };
+        return new Response(
+          JSON.stringify({
+            credentialType: "AwsStsFederation",
+            expiresAt: "2024-12-31T23:59:59Z",
+            data: {
+              awsAccessKeyId: "AKIAIOSFODNN7EXAMPLE",
+              awsSecretAccessKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+              awsSessionToken: "test-session-token",
+            },
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+      }),
+    );
+
+    const result = await getCredential(
+      "AwsStsFederation",
+      reqBody.clientId,
+      reqBody.identityToken,
+      reqBody.accessToken,
+      reqBody.domain,
+      reqBody.serverHost,
+      reqBody.serverPort,
+      "",
+      awsAccessKeyId,
+    );
+
+    expect(capturedRequest).not.toBeNull();
+    expect(capturedRequest?.connectionMetadata).toBeUndefined();
+    expect(result.credentialType).toBe("AwsStsFederation");
+  });
+
+  it("throws an error when receiving a 404 response", async ({ expect }) => {
+    vi.mocked(core.info).mockImplementation(() => {});
+
+    server.use(
+      edgeApiGetCredentialsHandler(edgeApiGetCredentialsHandlerResponse404),
+    );
+
+    await expect(
+      getCredential(
+        "AwsStsFederation",
+        reqBody.clientId,
+        reqBody.identityToken,
+        reqBody.accessToken,
+        reqBody.domain,
+        reqBody.serverHost,
+        reqBody.serverPort,
+        "",
+        "AKIAIOSFODNN7EXAMPLE",
+      ),
+    ).rejects.toThrowError(/Failed to fetch credential/);
+  });
+
+  it("throws an error when receiving a 404 Unknown credential response", async ({
+    expect,
+  }) => {
+    vi.mocked(core.info).mockImplementation(() => {});
+
+    server.use(
+      edgeApiGetCredentialsHandler(() =>
+        edgeApiGetCredentialsHandlerResponse404({
+          credentialType: "Unknown",
+          expiresAt: null,
+          data: {},
+        }),
+      ),
+    );
+
+    await expect(
+      getCredential(
+        "AwsStsFederation",
+        reqBody.clientId,
+        reqBody.identityToken,
+        reqBody.accessToken,
+        reqBody.domain,
+        reqBody.serverHost,
+        reqBody.serverPort,
+        "",
+        "AKIAIOSFODNN7EXAMPLE",
+      ),
+    ).rejects.toThrowError(/Failed to fetch credential/);
   });
 
   it("throws an error when receiving a 400 response", async ({ expect }) => {
