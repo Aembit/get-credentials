@@ -1,6 +1,7 @@
 import { setTimeout as sleep } from "node:timers/promises";
 import * as core from "@actions/core";
 import {
+  type ApiCredentialsRequest,
   type CredentialProviderTypes,
   credentialProviderTypesEnum,
   type EdgeCredentials,
@@ -32,13 +33,17 @@ async function getCredential(
   serverHost: string,
   serverPort: number,
   resourceSetId?: string,
+  awsAccessKeyId?: string,
 ): Promise<ValidatedApiCredentialsResponse> {
   const tenantId: string = clientId.split(":")[2];
   const url: string = `https://${tenantId}.ec.${domain}`;
 
   core.info(`Fetching credential from ${url}/edge/v1/credentials`);
+  const awsAccessKeyInfo = awsAccessKeyId
+    ? `, awsAccessKeyId=${awsAccessKeyId}`
+    : "";
   core.debug(
-    `Credential request: credentialType=${credentialType}, serverHost=${serverHost}, serverPort=${serverPort}, resourceSetId=${resourceSetId}`,
+    `Credential request: credentialType=${credentialType}, serverHost=${serverHost}, serverPort=${serverPort}, resourceSetId=${resourceSetId}${awsAccessKeyInfo}`,
   );
 
   let lastError: unknown;
@@ -51,19 +56,27 @@ async function getCredential(
       await sleep(RETRY_DELAY_MS);
     }
 
-    const result = await edgeApiGetCredentials(
-      {
-        client: {
-          github: {
-            identityToken: identityToken,
-          },
+    const requestBody: ApiCredentialsRequest = {
+      client: {
+        github: {
+          identityToken: identityToken,
         },
-        server: {
-          host: serverHost,
-          port: serverPort,
-        },
-        credentialType: credentialType as CredentialProviderTypes,
       },
+      server: {
+        host: serverHost,
+        port: serverPort,
+      },
+      credentialType: credentialType as CredentialProviderTypes,
+    };
+
+    if (awsAccessKeyId) {
+      requestBody.connectionMetadata = {
+        accessKeyId: awsAccessKeyId,
+      };
+    }
+
+    const result = await edgeApiGetCredentials(
+      requestBody,
       resourceSetId ? { "X-Aembit-ResourceSet": resourceSetId } : undefined,
       {
         baseURL: url,

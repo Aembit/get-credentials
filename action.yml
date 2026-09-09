@@ -24,6 +24,9 @@ inputs:
   server-port:
     description: "Server workload port number"
     default: "443"
+  aws-access-key-id:
+    description: "AWS Access Key ID selector when an Access Policy defines multiple AWS STS Federation credential providers"
+    required: false
 
 outputs:
   api-key:
