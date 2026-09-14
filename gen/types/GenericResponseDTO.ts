@@ -15,7 +15,7 @@ export type GenericResponseDTO = {
     success?: boolean;
     /**
      * @description Message to indicate why the API call failed
-     * @type string
+     * @type null,string | undefined
     */
     message?: string | null;
     /**

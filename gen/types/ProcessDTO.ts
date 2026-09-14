@@ -10,7 +10,7 @@
 export type ProcessDTO = {
     /**
      * @description Process name
-     * @type string
+     * @type null,string | undefined
     */
     name?: string | null;
     /**
@@ -25,12 +25,22 @@ export type ProcessDTO = {
     userId?: number;
     /**
      * @description Username running the process
-     * @type string
+     * @type null,string | undefined
     */
     userName?: string | null;
     /**
      * @description Executable file path of the process
-     * @type string
+     * @type null,string | undefined
     */
     exePath?: string | null;
+    /**
+     * @description Command line running the process
+     * @type null,string | undefined
+    */
+    commandLine?: string | null;
+    /**
+     * @description Executable hash of the process
+     * @type null,string | undefined
+    */
+    exeHash?: string | null;
 };

@@ -54013,7 +54013,7 @@ function getEdgeApiAuthUrl() {
     return res;
 }
 /**
- * @description Authenticates Client Workloads to Aembit Edge using a Trust Provider
+ * @description Bootstraps a session with the Aembit Edge API. This endpoint authenticates a Client Workload by verifying its identity against a specific Aembit Trust Provider. The Trust Provider must be configured in the Aembit Console to match the environment where the workload is running. Supported Trust Provider types includeAWS Metadata Service, AWS Role, GCP Identity Token, GitHub Action ID Token, GitLab Job ID Token, Kubernetes Service Account,OIDC ID Token, and Terraform Cloud Identity Token.
  * @summary Authenticate to the Edge API
  * {@link /edge/v1/auth}
  */
@@ -54069,7 +54069,7 @@ function getEdgeApiGetCredentialsUrl() {
     return res;
 }
 /**
- * @description Retrieves credentials for a Client Workload based on your configured Access Policies
+ * @description Retrieves credentials for a Client Workload based on configured Access Policies
  * @summary Get credentials for a Client Workload
  * {@link /edge/v1/credentials}
  */
@@ -54098,10 +54098,15 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.edgeApiAuthHandlerResponse200 = edgeApiAuthHandlerResponse200;
 exports.edgeApiAuthHandlerResponse400 = edgeApiAuthHandlerResponse400;
 exports.edgeApiAuthHandlerResponse401 = edgeApiAuthHandlerResponse401;
+exports.edgeApiAuthHandlerResponse429 = edgeApiAuthHandlerResponse429;
 exports.edgeApiAuthHandlerResponse500 = edgeApiAuthHandlerResponse500;
 exports.edgeApiAuthHandler = edgeApiAuthHandler;
 exports.edgeApiGetCredentialsHandlerResponse200 = edgeApiGetCredentialsHandlerResponse200;
 exports.edgeApiGetCredentialsHandlerResponse400 = edgeApiGetCredentialsHandlerResponse400;
+exports.edgeApiGetCredentialsHandlerResponse401 = edgeApiGetCredentialsHandlerResponse401;
+exports.edgeApiGetCredentialsHandlerResponse403 = edgeApiGetCredentialsHandlerResponse403;
+exports.edgeApiGetCredentialsHandlerResponse404 = edgeApiGetCredentialsHandlerResponse404;
+exports.edgeApiGetCredentialsHandlerResponse429 = edgeApiGetCredentialsHandlerResponse429;
 exports.edgeApiGetCredentialsHandlerResponse500 = edgeApiGetCredentialsHandlerResponse500;
 exports.edgeApiGetCredentialsHandler = edgeApiGetCredentialsHandler;
 const mocks_1 = __nccwpck_require__(3875);
@@ -54125,6 +54130,14 @@ function edgeApiAuthHandlerResponse400(data) {
 function edgeApiAuthHandlerResponse401(data) {
     return new Response(JSON.stringify(data), {
         status: 401,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+}
+function edgeApiAuthHandlerResponse429(data) {
+    return new Response(JSON.stringify(data), {
+        status: 429,
         headers: {
             'Content-Type': 'application/json'
         },
@@ -54161,6 +54174,41 @@ function edgeApiGetCredentialsHandlerResponse200(data) {
 function edgeApiGetCredentialsHandlerResponse400(data) {
     return new Response(JSON.stringify(data), {
         status: 400,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+}
+function edgeApiGetCredentialsHandlerResponse401(data) {
+    return new Response(JSON.stringify(data), {
+        status: 401,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+}
+function edgeApiGetCredentialsHandlerResponse403(data) {
+    return new Response(JSON.stringify(data), {
+        status: 403,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+}
+function edgeApiGetCredentialsHandlerResponse404(data) {
+    return new Response(JSON.stringify(data), {
+        status: 404,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+}
+function edgeApiGetCredentialsHandlerResponse429(data) {
+    return new Response(JSON.stringify(data), {
+        status: 429,
+        headers: {
+            'Content-Type': 'application/json'
+        },
     });
 }
 function edgeApiGetCredentialsHandlerResponse500(data) {
@@ -54193,8 +54241,8 @@ function edgeApiGetCredentialsHandler(data) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createEdgeApiGetCredentialsMutationResponse = exports.createEdgeApiGetCredentialsMutationRequest = exports.createEdgeApiGetCredentials500 = exports.createEdgeApiGetCredentials400 = exports.createEdgeApiGetCredentials200 = exports.createEdgeApiGetCredentialsHeaderParams = exports.createEdgeApiAuthMutationResponse = exports.createEdgeApiAuthMutationRequest = exports.createEdgeApiAuth500 = exports.createEdgeApiAuth401 = exports.createEdgeApiAuth400 = exports.createEdgeApiAuth200 = exports.createEdgeApiAuthHeaderParams = exports.createTokenDTO = exports.createGenericResponseDTO = exports.createAuthRequest = exports.createApiCredentialsResponse = exports.createEdgeCredentials = exports.createApiCredentialsRequest = exports.createCredentialProviderTypes = exports.createServerWorkloadDetails = exports.createTransportProtocol = exports.createClientWorkloadDetails = exports.createIdentityTokenAttestationDTO = exports.createHostDTO = exports.createNetworkInterfacesDTO = exports.createSensorsDTO = exports.createCrowdStrikeDTO = exports.createProcessDTO = exports.createK8sDTO = exports.createOsDTO = exports.createEnvironmentDTO = exports.createGcpAttestationDTO = exports.createAzureAttestationDTO = exports.createAzureAttestedDocumentDTO = exports.createAwsDTO = exports.createStsGetCallerIdentityDTO = exports.createAwsEcsDTO = exports.createLambdaDTO = exports.edgeApiGetCredentialsHandler = exports.edgeApiGetCredentialsHandlerResponse500 = exports.edgeApiGetCredentialsHandlerResponse400 = exports.edgeApiGetCredentialsHandlerResponse200 = exports.edgeApiAuthHandler = exports.edgeApiAuthHandlerResponse500 = exports.edgeApiAuthHandlerResponse401 = exports.edgeApiAuthHandlerResponse400 = exports.edgeApiAuthHandlerResponse200 = exports.edgeApiGetCredentials = exports.edgeApiAuth = void 0;
-exports.transportProtocolEnum = exports.credentialProviderTypesEnum = void 0;
+exports.createEdgeApiAuthMutationRequest = exports.createEdgeApiAuth500 = exports.createEdgeApiAuth429 = exports.createEdgeApiAuth401 = exports.createEdgeApiAuth400 = exports.createEdgeApiAuth200 = exports.createEdgeApiAuthHeaderParams = exports.createTokenDTO = exports.createGenericResponseDTO = exports.createAuthRequest = exports.createApiCredentialsResponse = exports.createEdgeCredentials = exports.createApiCredentialsRequest = exports.createConnectionMetadata = exports.createCredentialProviderTypes = exports.createServerWorkloadDetails = exports.createTransportProtocol = exports.createClientWorkloadDetails = exports.createIdentityTokenAttestationDTO = exports.createHostDTO = exports.createNetworkInterfacesDTO = exports.createSensorsDTO = exports.createCrowdStrikeDTO = exports.createProcessDTO = exports.createK8sDTO = exports.createOsDTO = exports.createEnvironmentDTO = exports.createGcpAttestationDTO = exports.createAzureAttestationDTO = exports.createAzureAttestedDocumentDTO = exports.createAwsDTO = exports.createStsGetCallerIdentityDTO = exports.createAwsEcsDTO = exports.createLambdaDTO = exports.edgeApiGetCredentialsHandler = exports.edgeApiGetCredentialsHandlerResponse500 = exports.edgeApiGetCredentialsHandlerResponse429 = exports.edgeApiGetCredentialsHandlerResponse404 = exports.edgeApiGetCredentialsHandlerResponse403 = exports.edgeApiGetCredentialsHandlerResponse401 = exports.edgeApiGetCredentialsHandlerResponse400 = exports.edgeApiGetCredentialsHandlerResponse200 = exports.edgeApiAuthHandler = exports.edgeApiAuthHandlerResponse500 = exports.edgeApiAuthHandlerResponse429 = exports.edgeApiAuthHandlerResponse401 = exports.edgeApiAuthHandlerResponse400 = exports.edgeApiAuthHandlerResponse200 = exports.edgeApiGetCredentials = exports.edgeApiAuth = void 0;
+exports.transportProtocolEnum = exports.credentialProviderTypesEnum = exports.createEdgeApiGetCredentialsMutationResponse = exports.createEdgeApiGetCredentialsMutationRequest = exports.createEdgeApiGetCredentials500 = exports.createEdgeApiGetCredentials429 = exports.createEdgeApiGetCredentials404 = exports.createEdgeApiGetCredentials403 = exports.createEdgeApiGetCredentials401 = exports.createEdgeApiGetCredentials400 = exports.createEdgeApiGetCredentials200 = exports.createEdgeApiGetCredentialsHeaderParams = exports.createEdgeApiAuthMutationResponse = void 0;
 var edgeApiAuth_1 = __nccwpck_require__(8347);
 Object.defineProperty(exports, "edgeApiAuth", ({ enumerable: true, get: function () { return edgeApiAuth_1.edgeApiAuth; } }));
 var edgeApiGetCredentials_1 = __nccwpck_require__(4811);
@@ -54203,10 +54251,15 @@ var handlers_1 = __nccwpck_require__(4011);
 Object.defineProperty(exports, "edgeApiAuthHandlerResponse200", ({ enumerable: true, get: function () { return handlers_1.edgeApiAuthHandlerResponse200; } }));
 Object.defineProperty(exports, "edgeApiAuthHandlerResponse400", ({ enumerable: true, get: function () { return handlers_1.edgeApiAuthHandlerResponse400; } }));
 Object.defineProperty(exports, "edgeApiAuthHandlerResponse401", ({ enumerable: true, get: function () { return handlers_1.edgeApiAuthHandlerResponse401; } }));
+Object.defineProperty(exports, "edgeApiAuthHandlerResponse429", ({ enumerable: true, get: function () { return handlers_1.edgeApiAuthHandlerResponse429; } }));
 Object.defineProperty(exports, "edgeApiAuthHandlerResponse500", ({ enumerable: true, get: function () { return handlers_1.edgeApiAuthHandlerResponse500; } }));
 Object.defineProperty(exports, "edgeApiAuthHandler", ({ enumerable: true, get: function () { return handlers_1.edgeApiAuthHandler; } }));
 Object.defineProperty(exports, "edgeApiGetCredentialsHandlerResponse200", ({ enumerable: true, get: function () { return handlers_1.edgeApiGetCredentialsHandlerResponse200; } }));
 Object.defineProperty(exports, "edgeApiGetCredentialsHandlerResponse400", ({ enumerable: true, get: function () { return handlers_1.edgeApiGetCredentialsHandlerResponse400; } }));
+Object.defineProperty(exports, "edgeApiGetCredentialsHandlerResponse401", ({ enumerable: true, get: function () { return handlers_1.edgeApiGetCredentialsHandlerResponse401; } }));
+Object.defineProperty(exports, "edgeApiGetCredentialsHandlerResponse403", ({ enumerable: true, get: function () { return handlers_1.edgeApiGetCredentialsHandlerResponse403; } }));
+Object.defineProperty(exports, "edgeApiGetCredentialsHandlerResponse404", ({ enumerable: true, get: function () { return handlers_1.edgeApiGetCredentialsHandlerResponse404; } }));
+Object.defineProperty(exports, "edgeApiGetCredentialsHandlerResponse429", ({ enumerable: true, get: function () { return handlers_1.edgeApiGetCredentialsHandlerResponse429; } }));
 Object.defineProperty(exports, "edgeApiGetCredentialsHandlerResponse500", ({ enumerable: true, get: function () { return handlers_1.edgeApiGetCredentialsHandlerResponse500; } }));
 Object.defineProperty(exports, "edgeApiGetCredentialsHandler", ({ enumerable: true, get: function () { return handlers_1.edgeApiGetCredentialsHandler; } }));
 var mocks_1 = __nccwpck_require__(3875);
@@ -54230,6 +54283,7 @@ Object.defineProperty(exports, "createClientWorkloadDetails", ({ enumerable: tru
 Object.defineProperty(exports, "createTransportProtocol", ({ enumerable: true, get: function () { return mocks_1.createTransportProtocol; } }));
 Object.defineProperty(exports, "createServerWorkloadDetails", ({ enumerable: true, get: function () { return mocks_1.createServerWorkloadDetails; } }));
 Object.defineProperty(exports, "createCredentialProviderTypes", ({ enumerable: true, get: function () { return mocks_1.createCredentialProviderTypes; } }));
+Object.defineProperty(exports, "createConnectionMetadata", ({ enumerable: true, get: function () { return mocks_1.createConnectionMetadata; } }));
 Object.defineProperty(exports, "createApiCredentialsRequest", ({ enumerable: true, get: function () { return mocks_1.createApiCredentialsRequest; } }));
 Object.defineProperty(exports, "createEdgeCredentials", ({ enumerable: true, get: function () { return mocks_1.createEdgeCredentials; } }));
 Object.defineProperty(exports, "createApiCredentialsResponse", ({ enumerable: true, get: function () { return mocks_1.createApiCredentialsResponse; } }));
@@ -54240,12 +54294,17 @@ Object.defineProperty(exports, "createEdgeApiAuthHeaderParams", ({ enumerable: t
 Object.defineProperty(exports, "createEdgeApiAuth200", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiAuth200; } }));
 Object.defineProperty(exports, "createEdgeApiAuth400", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiAuth400; } }));
 Object.defineProperty(exports, "createEdgeApiAuth401", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiAuth401; } }));
+Object.defineProperty(exports, "createEdgeApiAuth429", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiAuth429; } }));
 Object.defineProperty(exports, "createEdgeApiAuth500", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiAuth500; } }));
 Object.defineProperty(exports, "createEdgeApiAuthMutationRequest", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiAuthMutationRequest; } }));
 Object.defineProperty(exports, "createEdgeApiAuthMutationResponse", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiAuthMutationResponse; } }));
 Object.defineProperty(exports, "createEdgeApiGetCredentialsHeaderParams", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiGetCredentialsHeaderParams; } }));
 Object.defineProperty(exports, "createEdgeApiGetCredentials200", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiGetCredentials200; } }));
 Object.defineProperty(exports, "createEdgeApiGetCredentials400", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiGetCredentials400; } }));
+Object.defineProperty(exports, "createEdgeApiGetCredentials401", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiGetCredentials401; } }));
+Object.defineProperty(exports, "createEdgeApiGetCredentials403", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiGetCredentials403; } }));
+Object.defineProperty(exports, "createEdgeApiGetCredentials404", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiGetCredentials404; } }));
+Object.defineProperty(exports, "createEdgeApiGetCredentials429", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiGetCredentials429; } }));
 Object.defineProperty(exports, "createEdgeApiGetCredentials500", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiGetCredentials500; } }));
 Object.defineProperty(exports, "createEdgeApiGetCredentialsMutationRequest", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiGetCredentialsMutationRequest; } }));
 Object.defineProperty(exports, "createEdgeApiGetCredentialsMutationResponse", ({ enumerable: true, get: function () { return mocks_1.createEdgeApiGetCredentialsMutationResponse; } }));
@@ -54287,6 +54346,7 @@ exports.createClientWorkloadDetails = createClientWorkloadDetails;
 exports.createTransportProtocol = createTransportProtocol;
 exports.createServerWorkloadDetails = createServerWorkloadDetails;
 exports.createCredentialProviderTypes = createCredentialProviderTypes;
+exports.createConnectionMetadata = createConnectionMetadata;
 exports.createApiCredentialsRequest = createApiCredentialsRequest;
 exports.createEdgeCredentials = createEdgeCredentials;
 exports.createApiCredentialsResponse = createApiCredentialsResponse;
@@ -54297,12 +54357,17 @@ exports.createEdgeApiAuthHeaderParams = createEdgeApiAuthHeaderParams;
 exports.createEdgeApiAuth200 = createEdgeApiAuth200;
 exports.createEdgeApiAuth400 = createEdgeApiAuth400;
 exports.createEdgeApiAuth401 = createEdgeApiAuth401;
+exports.createEdgeApiAuth429 = createEdgeApiAuth429;
 exports.createEdgeApiAuth500 = createEdgeApiAuth500;
 exports.createEdgeApiAuthMutationRequest = createEdgeApiAuthMutationRequest;
 exports.createEdgeApiAuthMutationResponse = createEdgeApiAuthMutationResponse;
 exports.createEdgeApiGetCredentialsHeaderParams = createEdgeApiGetCredentialsHeaderParams;
 exports.createEdgeApiGetCredentials200 = createEdgeApiGetCredentials200;
 exports.createEdgeApiGetCredentials400 = createEdgeApiGetCredentials400;
+exports.createEdgeApiGetCredentials401 = createEdgeApiGetCredentials401;
+exports.createEdgeApiGetCredentials403 = createEdgeApiGetCredentials403;
+exports.createEdgeApiGetCredentials404 = createEdgeApiGetCredentials404;
+exports.createEdgeApiGetCredentials429 = createEdgeApiGetCredentials429;
 exports.createEdgeApiGetCredentials500 = createEdgeApiGetCredentials500;
 exports.createEdgeApiGetCredentialsMutationRequest = createEdgeApiGetCredentialsMutationRequest;
 exports.createEdgeApiGetCredentialsMutationResponse = createEdgeApiGetCredentialsMutationResponse;
@@ -54332,7 +54397,7 @@ function createAwsDTO(data) {
     return Object.assign({ "instanceIdentityDocument": faker_1.faker.string.alpha(), "instanceIdentityDocumentSignature": faker_1.faker.string.alpha(), "lambda": createLambdaDTO(), "ecs": createAwsEcsDTO(), "stsGetCallerIdentity": createStsGetCallerIdentityDTO() }, data || {});
 }
 /**
- * @description Azure attested document with signature and nonce for verification
+ * @description Azure Instance Metadata Service (IMDS) Attested Data document.
  */
 function createAzureAttestedDocumentDTO(data) {
     return Object.assign({ "encoding": faker_1.faker.string.alpha(), "signature": faker_1.faker.string.alpha(), "nonce": faker_1.faker.string.alpha() }, data || {});
@@ -54371,7 +54436,7 @@ function createK8sDTO(data) {
  * @description Process information for Client Workload identification
  */
 function createProcessDTO(data) {
-    return Object.assign({ "name": faker_1.faker.string.alpha(), "pid": faker_1.faker.number.int(), "userId": faker_1.faker.number.int(), "userName": faker_1.faker.string.alpha(), "exePath": faker_1.faker.string.alpha() }, data || {});
+    return Object.assign({ "name": faker_1.faker.string.alpha(), "pid": faker_1.faker.number.int(), "userId": faker_1.faker.number.int(), "userName": faker_1.faker.string.alpha(), "exePath": faker_1.faker.string.alpha(), "commandLine": faker_1.faker.string.alpha(), "exeHash": faker_1.faker.string.alpha() }, data || {});
 }
 /**
  * @description CrowdStrike agent information for endpoint security attestation
@@ -54410,25 +54475,31 @@ function createTransportProtocol() {
     return faker_1.faker.helpers.arrayElement(["TCP"]);
 }
 /**
- * @description Target server connection details for credential requests
+ * @description Target resource details for which the credential is being requested. These fields are used to match the request against your configured Access Policies.
  */
 function createServerWorkloadDetails(data) {
     return Object.assign({ "transportProtocol": createTransportProtocol(), "host": faker_1.faker.string.alpha(), "port": faker_1.faker.number.int() }, data || {});
 }
 /**
- * @description Type of credential being requested from your configured Credential Provider
+ * @description Type of credential being requested from your configured Credential Provider.\r\nNote: Use \'OAuthToken\' for Azure Entra ID, Microsoft, and generic OAuth2 providers.
  */
 function createCredentialProviderTypes() {
-    return faker_1.faker.helpers.arrayElement(["Unknown", "ApiKey", "UsernamePassword", "GoogleWorkloadIdentityFederation", "OAuthToken", "AwsStsFederation"]);
+    return faker_1.faker.helpers.arrayElement(["Unknown", "ApiKey", "UsernamePassword", "GoogleWorkloadIdentityFederation", "OAuthToken", "AwsStsFederation", "X509Svid"]);
+}
+/**
+ * @description Filter for multi-credential provider access policy credential request
+ */
+function createConnectionMetadata(data) {
+    return Object.assign({ "accountName": faker_1.faker.string.alpha(), "accessKeyId": faker_1.faker.string.alpha(), "headerName": faker_1.faker.string.alpha(), "headerValue": faker_1.faker.string.alpha(), "httpBodyFieldPath": faker_1.faker.string.alpha(), "httpBodyFieldValue": faker_1.faker.string.alpha() }, data || {});
 }
 /**
  * @description Request payload for retrieving credentials for a Client Workload
  */
 function createApiCredentialsRequest(data) {
-    return Object.assign({ "client": createClientWorkloadDetails(), "server": createServerWorkloadDetails(), "credentialType": createCredentialProviderTypes() }, data || {});
+    return Object.assign({ "client": createClientWorkloadDetails(), "server": createServerWorkloadDetails(), "credentialType": createCredentialProviderTypes(), "connectionMetadata": createConnectionMetadata(), "certSigningRequest": faker_1.faker.string.alpha() }, data || {});
 }
 /**
- * @description Credential data returned to Client Workloads based on your configured Credential Providers
+ * @description     Credential data returned to Client Workloads based on your configured Credential Providers\n    For AWS (AwsStsFederation), look in the aws* fields.\n    For API Key and Username/Password, look in their respective fields.\n    For all other types (GCP, OAuth, OIDC, Aembit), the result is in the \'token\' field.
  */
 function createEdgeCredentials(data) {
     return Object.assign({ "apiKey": faker_1.faker.string.alpha(), "token": faker_1.faker.string.alpha(), "username": faker_1.faker.string.alpha(), "password": faker_1.faker.string.alpha(), "awsAccessKeyId": faker_1.faker.string.alpha(), "awsSecretAccessKey": faker_1.faker.string.alpha(), "awsSessionToken": faker_1.faker.string.alpha() }, data || {});
@@ -54440,10 +54511,10 @@ function createApiCredentialsResponse(data) {
     return Object.assign({ "credentialType": createCredentialProviderTypes(), "expiresAt": faker_1.faker.date.anytime().toISOString(), "data": createEdgeCredentials() }, data || {});
 }
 /**
- * @description Identity and attestation information for Client Workload authentication
+ * @description Identity and attestation information for Client Workload authentication. \nThis request initiates a session with the Aembit Edge API by providing proof of \nworkload identity via a configured Trust Provider.
  */
 function createAuthRequest(data) {
-    return Object.assign({ "clientId": faker_1.faker.string.alpha(), "client": createClientWorkloadDetails() }, data || {});
+    return Object.assign({ "clientId": faker_1.faker.string.alpha({ length: 1 }), "client": createClientWorkloadDetails() }, data || {});
 }
 /**
  * @description DTO for a Generic API Response
@@ -54455,7 +54526,7 @@ function createGenericResponseDTO(data) {
  * @description OAuth2-style access token response with expiration details
  */
 function createTokenDTO(data) {
-    return Object.assign({ "accessToken": faker_1.faker.string.alpha(), "tokenType": faker_1.faker.string.alpha(), "expiresIn": faker_1.faker.number.int() }, data || {});
+    return Object.assign({ "accessToken": faker_1.faker.string.alpha({ length: 1 }), "refreshToken": faker_1.faker.string.alpha(), "tokenType": faker_1.faker.string.alpha({ length: 1 }), "expiresIn": faker_1.faker.number.int() }, data || {});
 }
 function createEdgeApiAuthHeaderParams(data) {
     return Object.assign({ "X-Aembit-ResourceSet": faker_1.faker.string.uuid() }, data || {});
@@ -54476,6 +54547,12 @@ function createEdgeApiAuth400() {
  * @description Unauthorized
  */
 function createEdgeApiAuth401() {
+    return createGenericResponseDTO();
+}
+/**
+ * @description Too many authentication requests
+ */
+function createEdgeApiAuth429() {
     return createGenericResponseDTO();
 }
 /**
@@ -54503,7 +54580,31 @@ function createEdgeApiGetCredentials200() {
  * @description Invalid request or missing parameters
  */
 function createEdgeApiGetCredentials400() {
-    return undefined;
+    return createGenericResponseDTO();
+}
+/**
+ * @description Unauthorized access
+ */
+function createEdgeApiGetCredentials401() {
+    return createGenericResponseDTO();
+}
+/**
+ * @description Not applicable for this request
+ */
+function createEdgeApiGetCredentials403() {
+    return createGenericResponseDTO();
+}
+/**
+ * @description No client/server workload or access policy was found. Response will be of type ApiCredentialsResponse with credential type set to Unknown
+ */
+function createEdgeApiGetCredentials404() {
+    return createApiCredentialsResponse();
+}
+/**
+ * @description Too many credential requests
+ */
+function createEdgeApiGetCredentials429() {
+    return createGenericResponseDTO();
 }
 /**
  * @description Internal server error
@@ -54538,7 +54639,8 @@ exports.credentialProviderTypesEnum = {
     "UsernamePassword": "UsernamePassword",
     "GoogleWorkloadIdentityFederation": "GoogleWorkloadIdentityFederation",
     "OAuthToken": "OAuthToken",
-    "AwsStsFederation": "AwsStsFederation"
+    "AwsStsFederation": "AwsStsFederation",
+    "X509Svid": "X509Svid"
 };
 
 
@@ -54727,19 +54829,22 @@ const RETRY_DELAY_MS = 1000;
 function isJsonParseError(error) {
     return (error instanceof SyntaxError && error.message.toLowerCase().includes("json"));
 }
-function getCredential(credentialType, clientId, identityToken, accessToken, domain, serverHost, serverPort, resourceSetId) {
+function getCredential(credentialType, clientId, identityToken, accessToken, domain, serverHost, serverPort, resourceSetId, awsAccessKeyId) {
     return __awaiter(this, void 0, void 0, function* () {
         const tenantId = clientId.split(":")[2];
         const url = `https://${tenantId}.ec.${domain}`;
         core.info(`Fetching credential from ${url}/edge/v1/credentials`);
-        core.debug(`Credential request: credentialType=${credentialType}, serverHost=${serverHost}, serverPort=${serverPort}, resourceSetId=${resourceSetId}`);
+        const awsAccessKeyInfo = awsAccessKeyId
+            ? `, awsAccessKeyId=${awsAccessKeyId}`
+            : "";
+        core.debug(`Credential request: credentialType=${credentialType}, serverHost=${serverHost}, serverPort=${serverPort}, resourceSetId=${resourceSetId}${awsAccessKeyInfo}`);
         let lastError;
         for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
             if (attempt > 1) {
                 core.debug(`Retrying credential fetch (attempt ${attempt}/${MAX_ATTEMPTS}) after ${RETRY_DELAY_MS}ms`);
                 yield (0, promises_1.setTimeout)(RETRY_DELAY_MS);
             }
-            const result = yield (0, gen_1.edgeApiGetCredentials)({
+            const requestBody = {
                 client: {
                     github: {
                         identityToken: identityToken,
@@ -54750,7 +54855,13 @@ function getCredential(credentialType, clientId, identityToken, accessToken, dom
                     port: serverPort,
                 },
                 credentialType: credentialType,
-            }, resourceSetId ? { "X-Aembit-ResourceSet": resourceSetId } : undefined, {
+            };
+            if (awsAccessKeyId) {
+                requestBody.connectionMetadata = {
+                    accessKeyId: awsAccessKeyId,
+                };
+            }
+            const result = yield (0, gen_1.edgeApiGetCredentials)(requestBody, resourceSetId ? { "X-Aembit-ResourceSet": resourceSetId } : undefined, {
                 baseURL: url,
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -54986,7 +55097,8 @@ function run() {
             const credentialType = core.getInput("credential-type", {
                 required: true,
             });
-            core.debug(`Inputs: domain=${domain}, serverHost=${serverHost}, serverPort=${serverPort}, resourceSetId=${resourceSetId}, credentialType=${credentialType}`);
+            const awsAccessKeyId = core.getInput("aws-access-key-id");
+            core.debug(`Inputs: domain=${domain}, serverHost=${serverHost}, serverPort=${serverPort}, resourceSetId=${resourceSetId}, credentialType=${credentialType}, awsAccessKeyId=${awsAccessKeyId}`);
             (0, validate_1.validateClientId)(clientId);
             core.info("Client ID is valid ✅");
             // Validate Credential Type
@@ -54999,7 +55111,7 @@ function run() {
             // Get Access Token
             const accessToken = yield (0, access_token_1.getAccessToken)(clientId, identityToken, domain, resourceSetId);
             core.info("Access token obtained ✅");
-            const credentialData = yield (0, credential_1.getCredential)(credentialType, clientId, identityToken, accessToken, domain, serverHost, serverPortNum, resourceSetId);
+            const credentialData = yield (0, credential_1.getCredential)(credentialType, clientId, identityToken, accessToken, domain, serverHost, serverPortNum, resourceSetId, awsAccessKeyId);
             (0, credential_1.setOutputs)(credentialData.credentialType, credentialData.data);
             core.info("Credential outputs set ✅");
         }

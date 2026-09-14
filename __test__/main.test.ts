@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 import { v4 as uuidv4 } from "uuid";
-import { afterEach, beforeEach, describe, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as accessToken from "../src/access-token";
 import * as credential from "../src/credential";
 import * as identityToken from "../src/identity-token";
@@ -112,6 +112,7 @@ describe("run", () => {
       "aembit.io",
       "api.example.com",
       443,
+      "",
       "",
     );
 
@@ -312,6 +313,7 @@ describe("run", () => {
       customHost,
       Number(customPort),
       "",
+      "",
     );
   });
 
@@ -399,6 +401,7 @@ describe("run", () => {
       "aembit.io",
       "api.example.com",
       443,
+      "",
       "",
     );
     expect(credential.setOutputs).toHaveBeenCalledWith("UsernamePassword", {
@@ -523,6 +526,62 @@ describe("run", () => {
       "api.example.com",
       443,
       customResourceSetId,
+      "",
     );
+  });
+
+  it.each([
+    {
+      description: "when provided",
+      inputVal: "AKIAIOSFODNN7EXAMPLE",
+      expectedVal: "AKIAIOSFODNN7EXAMPLE",
+    },
+    {
+      description: "when not provided",
+      inputVal: undefined,
+      expectedVal: "",
+    },
+  ])("passes aws-access-key-id to getCredential $description", async ({
+    inputVal,
+    expectedVal,
+  }) => {
+    vi.mocked(core.getInput).mockImplementation((name: string) => {
+      const inputs: Record<string, string> = {
+        "client-id": validClientId,
+        domain: "aembit.io",
+        "server-host": "api.example.com",
+        "server-port": "443",
+        "resource-set-id": "",
+        "credential-type": "AwsStsFederation",
+        ...(inputVal !== undefined ? { "aws-access-key-id": inputVal } : {}),
+      };
+      return inputs[name] || "";
+    });
+
+    vi.mocked(credential.getCredential).mockResolvedValue({
+      credentialType: "AwsStsFederation",
+      expiresAt: null,
+      data: {
+        awsAccessKeyId: expectedVal || "key-id",
+        awsSecretAccessKey: "secret-key",
+        awsSessionToken: "session-token",
+      },
+    });
+
+    await run();
+
+    expect(core.getInput).toHaveBeenCalledWith("aws-access-key-id");
+    expect(credential.getCredential).toHaveBeenCalledWith(
+      "AwsStsFederation",
+      validClientId,
+      mockIdentityToken,
+      mockAccessToken,
+      "aembit.io",
+      "api.example.com",
+      443,
+      "",
+      expectedVal,
+    );
+    expect(core.setFailed).not.toHaveBeenCalled();
   });
 });

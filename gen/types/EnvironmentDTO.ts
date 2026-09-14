@@ -10,22 +10,22 @@
 export type EnvironmentDTO = {
     /**
      * @description Kubernetes pod name environment variable
-     * @type string
+     * @type null,string | undefined
     */
     K8S_POD_NAME?: string | null;
     /**
      * @description Aembit Client Workload identifier environment variable
-     * @type string
+     * @type null,string | undefined
     */
     CLIENT_WORKLOAD_ID?: string | null;
     /**
      * @description Kubernetes Trust Provider identifier environment variable
-     * @type string
+     * @type null,string | undefined
     */
     KUBERNETES_PROVIDER_ID?: string | null;
     /**
      * @description Aembit Resource Set identifier environment variable
-     * @type string
+     * @type null,string | undefined
     */
     AEMBIT_RESOURCE_SET_ID?: string | null;
 };

@@ -11,17 +11,17 @@ import type { EdgeCredentials } from "./EdgeCredentials";
 */
 export type ApiCredentialsResponse = {
     /**
-     * @description Type of credential being requested from your configured Credential Provider
+     * @description Type of credential being requested from your configured Credential Provider.\r\nNote: Use \'OAuthToken\' for Azure Entra ID, Microsoft, and generic OAuth2 providers.
      * @type string | undefined
     */
     credentialType?: CredentialProviderTypes;
     /**
      * @description Token expiration time in ISO 8601 format, null for non-expiring credentials
-     * @type string, date-time
+     * @type null,string | undefined, date-time
     */
     expiresAt?: string | null;
     /**
-     * @description Credential data returned to Client Workloads based on your configured Credential Providers
+     * @description     Credential data returned to Client Workloads based on your configured Credential Providers\n    For AWS (AwsStsFederation), look in the aws* fields.\n    For API Key and Username/Password, look in their respective fields.\n    For all other types (GCP, OAuth, OIDC, Aembit), the result is in the \'token\' field.
      * @type object | undefined
     */
     data?: EdgeCredentials;

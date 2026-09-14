@@ -22,9 +22,10 @@ async function run(): Promise<void> {
     const credentialType: string = core.getInput("credential-type", {
       required: true,
     });
+    const awsAccessKeyId: string = core.getInput("aws-access-key-id");
 
     core.debug(
-      `Inputs: domain=${domain}, serverHost=${serverHost}, serverPort=${serverPort}, resourceSetId=${resourceSetId}, credentialType=${credentialType}`,
+      `Inputs: domain=${domain}, serverHost=${serverHost}, serverPort=${serverPort}, resourceSetId=${resourceSetId}, credentialType=${credentialType}, awsAccessKeyId=${awsAccessKeyId}`,
     );
 
     validateClientId(clientId);
@@ -58,6 +59,7 @@ async function run(): Promise<void> {
       serverHost,
       serverPortNum,
       resourceSetId,
+      awsAccessKeyId,
     );
     setOutputs(credentialData.credentialType, credentialData.data);
     core.info("Credential outputs set ✅");

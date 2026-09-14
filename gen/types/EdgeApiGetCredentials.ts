@@ -9,6 +9,7 @@ import type { GenericResponseDTO } from "./GenericResponseDTO";
 
 export type EdgeApiGetCredentialsHeaderParams = {
     /**
+     * @description The Resource Set ID of the Access Policy to be used for this credential request. If not specified, the default Resource Set will be used.
      * @type string | undefined, uuid
     */
     "X-Aembit-ResourceSet"?: string;
@@ -22,7 +23,27 @@ export type EdgeApiGetCredentials200 = ApiCredentialsResponse;
 /**
  * @description Invalid request or missing parameters
 */
-export type EdgeApiGetCredentials400 = any;
+export type EdgeApiGetCredentials400 = GenericResponseDTO;
+
+/**
+ * @description Unauthorized access
+*/
+export type EdgeApiGetCredentials401 = GenericResponseDTO;
+
+/**
+ * @description Not applicable for this request
+*/
+export type EdgeApiGetCredentials403 = GenericResponseDTO;
+
+/**
+ * @description No client/server workload or access policy was found. Response will be of type ApiCredentialsResponse with credential type set to Unknown
+*/
+export type EdgeApiGetCredentials404 = ApiCredentialsResponse;
+
+/**
+ * @description Too many credential requests
+*/
+export type EdgeApiGetCredentials429 = GenericResponseDTO;
 
 /**
  * @description Internal server error
@@ -37,5 +58,5 @@ export type EdgeApiGetCredentialsMutation = {
     Response: EdgeApiGetCredentials200;
     Request: EdgeApiGetCredentialsMutationRequest;
     HeaderParams: EdgeApiGetCredentialsHeaderParams;
-    Errors: EdgeApiGetCredentials400 | EdgeApiGetCredentials500;
+    Errors: EdgeApiGetCredentials400 | EdgeApiGetCredentials401 | EdgeApiGetCredentials403 | EdgeApiGetCredentials404 | EdgeApiGetCredentials429 | EdgeApiGetCredentials500;
 };

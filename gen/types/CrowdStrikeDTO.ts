@@ -10,7 +10,7 @@
 export type CrowdStrikeDTO = {
     /**
      * @description Unique identifier for the CrowdStrike agent
-     * @type string
+     * @type null,string | undefined
     */
     agentId?: string | null;
 };

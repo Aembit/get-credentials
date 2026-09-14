@@ -6,17 +6,18 @@
 import type { ClientWorkloadDetails } from "./ClientWorkloadDetails";
 
 /**
- * @description Identity and attestation information for Client Workload authentication
+ * @description Identity and attestation information for Client Workload authentication. \nThis request initiates a session with the Aembit Edge API by providing proof of \nworkload identity via a configured Trust Provider.
 */
 export type AuthRequest = {
     /**
-     * @description Trust Provider Client Id for authentication
+     * @description The Aembit ARN of the Trust Provider configured to attest this workload.\nFormat: \'aembit:{stack}:{tenant}:identity:{type}:{uuid}\'\nWhere to find it:\nIn the Aembit Admin UI, navigate to \'Trust Providers\', select your provider, \nand copy the value from the \'ID\' field.
+     * @minLength 1
      * @type string
     */
-    clientId?: string | null;
+    clientId: string;
     /**
      * @description Identity and attestation information for a Client Workload requesting credentials
-     * @type object | undefined
+     * @type object
     */
-    client?: ClientWorkloadDetails;
+    client: ClientWorkloadDetails;
 };

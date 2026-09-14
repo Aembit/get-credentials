@@ -4,7 +4,7 @@
 */
 
 import fetch from "@kubb/plugin-client/clients/fetch";
-import type { EdgeApiAuthMutationRequest, EdgeApiAuthMutationResponse, EdgeApiAuthHeaderParams, EdgeApiAuth400, EdgeApiAuth401, EdgeApiAuth500 } from "../types/EdgeApiAuth";
+import type { EdgeApiAuthMutationRequest, EdgeApiAuthMutationResponse, EdgeApiAuthHeaderParams, EdgeApiAuth400, EdgeApiAuth401, EdgeApiAuth429, EdgeApiAuth500 } from "../types/EdgeApiAuth";
 import type { RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/fetch";
 
 function getEdgeApiAuthUrl() {
@@ -13,15 +13,15 @@ function getEdgeApiAuthUrl() {
 }
 
 /**
- * @description Authenticates Client Workloads to Aembit Edge using a Trust Provider
+ * @description Bootstraps a session with the Aembit Edge API. This endpoint authenticates a Client Workload by verifying its identity against a specific Aembit Trust Provider. The Trust Provider must be configured in the Aembit Console to match the environment where the workload is running. Supported Trust Provider types includeAWS Metadata Service, AWS Role, GCP Identity Token, GitHub Action ID Token, GitLab Job ID Token, Kubernetes Service Account,OIDC ID Token, and Terraform Cloud Identity Token.
  * @summary Authenticate to the Edge API
  * {@link /edge/v1/auth}
  */
-export async function edgeApiAuth(data?: EdgeApiAuthMutationRequest, headers?: EdgeApiAuthHeaderParams, config: Partial<RequestConfig<EdgeApiAuthMutationRequest>> & { client?: typeof fetch } = {}) {
+export async function edgeApiAuth(data: EdgeApiAuthMutationRequest, headers?: EdgeApiAuthHeaderParams, config: Partial<RequestConfig<EdgeApiAuthMutationRequest>> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  
   
   const requestData = data  
   
-  const res = await request<EdgeApiAuthMutationResponse, ResponseErrorConfig<EdgeApiAuth400 | EdgeApiAuth401 | EdgeApiAuth500>, EdgeApiAuthMutationRequest>({ method : "POST", url : getEdgeApiAuthUrl().url.toString(), data : requestData, ... requestConfig, headers : { ...headers, ...requestConfig.headers } })  
+  const res = await request<EdgeApiAuthMutationResponse, ResponseErrorConfig<EdgeApiAuth400 | EdgeApiAuth401 | EdgeApiAuth429 | EdgeApiAuth500>, EdgeApiAuthMutationRequest>({ method : "POST", url : getEdgeApiAuthUrl().url.toString(), data : requestData, ... requestConfig, headers : { ...headers, ...requestConfig.headers } })  
   return res
 }

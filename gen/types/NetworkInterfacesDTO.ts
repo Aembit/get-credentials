@@ -6,19 +6,23 @@
 
 export type NetworkInterfacesDTO = {
     /**
-     * @type string
+     * @description Name of the network interface
+     * @type null,string | undefined
     */
     name?: string | null;
     /**
-     * @type string
+     * @description MAC address of the network interface
+     * @type null,string | undefined
     */
     macAddress?: string | null;
     /**
-     * @type array
+     * @description List of IPv4 addresses
+     * @type null,array | undefined
     */
     ipv4Addresses?: string[] | null;
     /**
-     * @type array
+     * @description List of IPv6 addresses
+     * @type null,array | undefined
     */
     ipv6Addresses?: string[] | null;
 };

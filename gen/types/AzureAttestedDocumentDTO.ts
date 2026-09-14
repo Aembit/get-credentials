@@ -5,22 +5,22 @@
 
 
 /**
- * @description Azure attested document with signature and nonce for verification
+ * @description Azure Instance Metadata Service (IMDS) Attested Data document.
 */
 export type AzureAttestedDocumentDTO = {
     /**
-     * @description Encoding format of the Azure attestation document
-     * @type string
+     * @description The encoding of the IMDS document.
+     * @type null,string | undefined
     */
     encoding?: string | null;
     /**
-     * @description Digital signature for Azure attestation document verification
-     * @type string
+     * @description The Base64-encoded signature (PKCS7 container) returned by the Azure IMDS \'document\' field.
+     * @type null,string | undefined
     */
     signature?: string | null;
     /**
-     * @description Cryptographic nonce for Azure attestation document freshness
-     * @type string
+     * @description The cryptographic nonce passed to the IMDS endpoint.
+     * @type null,string | undefined
     */
     nonce?: string | null;
 };

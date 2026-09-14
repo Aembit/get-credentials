@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import type { EdgeApiAuthMutationResponse, EdgeApiAuth400, EdgeApiAuth401, EdgeApiAuth500 } from "./types/EdgeApiAuth";
-import type { EdgeApiGetCredentialsMutationResponse, EdgeApiGetCredentials400, EdgeApiGetCredentials500 } from "./types/EdgeApiGetCredentials";
+import type { EdgeApiAuthMutationResponse, EdgeApiAuth400, EdgeApiAuth401, EdgeApiAuth429, EdgeApiAuth500 } from "./types/EdgeApiAuth";
+import type { EdgeApiGetCredentialsMutationResponse, EdgeApiGetCredentials400, EdgeApiGetCredentials401, EdgeApiGetCredentials403, EdgeApiGetCredentials404, EdgeApiGetCredentials429, EdgeApiGetCredentials500 } from "./types/EdgeApiGetCredentials";
 import { createEdgeApiAuthMutationResponse, createEdgeApiGetCredentialsMutationResponse } from "./mocks";
 import { http } from "msw";
 
@@ -29,6 +29,15 @@ export function edgeApiAuthHandlerResponse400(data: EdgeApiAuth400) {
 export function edgeApiAuthHandlerResponse401(data: EdgeApiAuth401) {
   return new Response(JSON.stringify(data), {
     status: 401,
+      headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+}
+
+export function edgeApiAuthHandlerResponse429(data: EdgeApiAuth429) {
+  return new Response(JSON.stringify(data), {
+    status: 429,
       headers: {
       'Content-Type': 'application/json'
     },
@@ -68,10 +77,48 @@ export function edgeApiGetCredentialsHandlerResponse200(data: EdgeApiGetCredenti
   })
 }
 
-export function edgeApiGetCredentialsHandlerResponse400(data?: EdgeApiGetCredentials400) {
+export function edgeApiGetCredentialsHandlerResponse400(data: EdgeApiGetCredentials400) {
   return new Response(JSON.stringify(data), {
     status: 400,
-  
+      headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+}
+
+export function edgeApiGetCredentialsHandlerResponse401(data: EdgeApiGetCredentials401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+      headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+}
+
+export function edgeApiGetCredentialsHandlerResponse403(data: EdgeApiGetCredentials403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+      headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+}
+
+export function edgeApiGetCredentialsHandlerResponse404(data: EdgeApiGetCredentials404) {
+  return new Response(JSON.stringify(data), {
+    status: 404,
+      headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+}
+
+export function edgeApiGetCredentialsHandlerResponse429(data: EdgeApiGetCredentials429) {
+  return new Response(JSON.stringify(data), {
+    status: 429,
+      headers: {
+      'Content-Type': 'application/json'
+    },
   })
 }
 
