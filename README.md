@@ -156,6 +156,22 @@ steps:
     run: aws sts get-caller-identity
 ```
 
+## Versioning and Releases
+
+The `Aembit/get-credentials` action follows [Semantic Versioning](https://semver.org/) and standard GitHub Action tagging conventions:
+
+- **Major Version Tag (`@v1`)**: Automatically updated to point to the latest stable release of that major version (e.g. `v1.3.0`). Recommended for most users to automatically receive non-breaking bug fixes and enhancements:
+  ```yaml
+  - uses: Aembit/get-credentials@v1
+  ```
+- **Exact Semver Tag (`@v1.3.0`)**: Pinned to an immutable release. Recommended for production pipelines with strict change management:
+  ```yaml
+  - uses: Aembit/get-credentials@v1.3.0
+  ```
+- **Pre-releases (`@v1.4.0-beta.1`)**: Published for testing and early feedback. Pre-releases do not update the floating major version tag (`@v1`).
+
+Release automation handles updating the floating major tag (`vX`) automatically upon publishing each new GitHub release.
+
 ## Troubleshooting
 
 If you are getting the error 
